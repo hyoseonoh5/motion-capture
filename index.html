@@ -176,6 +176,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
       <div class="sec">
         <div class="sec-title" id="secUpload"></div>
         <div class="atip" id="uploadTip"></div>
+        <input type="file" id="videoInput" accept="video/*">
         <button class="btn btn-blue" onclick="document.getElementById('videoInput').click()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
           <span id="btnUpload"></span>
@@ -205,14 +206,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
         <button class="btn btn-ghost" id="saveBtn" disabled><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span id="btnSave"></span></button>
         <button class="btn btn-red" id="resetBtn" disabled style="margin-top:5px"><span id="btnReset"></span></button>
       </div>
-      <div class="sec">
-        <div class="sec-title" id="secData"></div>
-        <div class="stat-grid">
-          <div class="stat-card"><div class="s-lbl" id="lblDur"></div><div class="s-val" id="stDur">--</div></div>
-          <div class="stat-card"><div class="s-lbl" id="lblFr"></div><div class="s-val" id="stFrames">--</div></div>
-          <div class="stat-card"><div class="s-lbl" id="lblRes"></div><div class="s-val" id="stRes">--</div></div>
-          <div class="stat-card"><div class="s-lbl" id="lblStat"></div><div class="s-val" id="stStatus"></div></div>
-        </div>
       </div>
     </aside>
     <div class="center" id="centerArea">
@@ -225,7 +218,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
   </div>
 </div>
 <video id="vidEl" style="display:none" playsinline></video>
-<input type="file" id="videoInput" accept="video/*" style="display:none">
 
 <script>
 const T = {
@@ -566,36 +558,15 @@ let duration=0,vidW=0,vidH=0;
 
 videoInput.addEventListener('change',e=>{
   const f=e.target.files[0];if(!f)return;
-  const url=URL.createObjectURL(f);
-  let activated=false;
-  
-  function onMeta(){
-    if(activated)return;
-    if(!vidEl.duration||vidEl.duration===0)return;
-    activated=true;
-    duration=vidEl.duration;
-    vidW=vidEl.videoWidth||320;
-    vidH=vidEl.videoHeight||240;
+  vidEl.src=URL.createObjectURL(f);
+  vidEl.addEventListener('loadedmetadata',()=>{
+    duration=vidEl.duration;vidW=vidEl.videoWidth;vidH=vidEl.videoHeight;
     document.getElementById('stDur').textContent=duration.toFixed(2)+'s';
     document.getElementById('stRes').textContent=vidW+'×'+vidH;
-    updateRange();
-    renderBtn.disabled=false;
+    updateRange();renderBtn.disabled=false;
     document.getElementById('stStatus').textContent=T[lang].sready;
     adjustLayout();
-  }
-  
-  vidEl.addEventListener('loadedmetadata', onMeta, {once:true});
-  vidEl.addEventListener('loadeddata',     onMeta, {once:true});
-  vidEl.addEventListener('canplay',        onMeta, {once:true});
-  vidEl.addEventListener('durationchange', onMeta, {once:true});
-  
-  // 폴백 타이머들
-  [500,1000,2000,3000].forEach(ms=>{
-    setTimeout(()=>{ if(!activated && vidEl.duration>0) onMeta(); }, ms);
-  });
-  
-  vidEl.src=url;
-  vidEl.load();
+  },{once:true});
   videoInput.value='';
 });
 
@@ -659,7 +630,7 @@ saveBtn.addEventListener('click',()=>{
   if(isMobile){
     const url=resultCanvas.toDataURL('image/png');
     const w=window.open();
-    if(w){w.document.write(`<html><head><meta name="viewport" content="width=device-width"><title>Strobo</title><style>body{margin:0;background:#000;display:flex;flex-direction:column;align-items:center;padding:12px;gap:10px;}img{max-width:100%;border-radius:8px;}p{color:#aaa;font-size:13px;font-family:sans-serif;text-align:center;}<\/style><\/head><body><p>${t.popup}</p><img src="${url}"><\/body><\/html>`);}
+    if(w){w.document.write(`<html><head><meta name="viewport" content="width=device-width"><title>Strobo</title><style>body{margin:0;background:#000;display:flex;flex-direction:column;align-items:center;padding:12px;gap:10px;}img{max-width:100%;border-radius:8px;}p{color:#aaa;font-size:13px;font-family:sans-serif;text-align:center;}</style></head><body><p>${t.popup}</p><img src="${url}"></body></html>`);}
     else alert(t.popblock);
   }else{resultCanvas.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='strobo_'+Date.now()+'.png';a.click();},'image/png');}
 });
