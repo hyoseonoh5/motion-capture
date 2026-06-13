@@ -13,28 +13,21 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
-
 header{display:flex;align-items:center;gap:10px;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--border);}
 .logo{font-size:20px;}
 header h1{font-size:15px;font-weight:700;}
 header p{font-size:12px;color:var(--muted);margin-left:8px;}
-
 .wrap{display:flex;flex:1;overflow:hidden;min-height:0;}
-
-/* SIDE */
 .side{width:270px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
 .sec{padding:16px;border-bottom:1px solid var(--border);}
 .sec-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
-
 .tip{font-size:11px;color:var(--muted);line-height:1.65;padding:8px 10px;background:rgba(88,166,255,.05);border:1px solid rgba(88,166,255,.15);border-radius:6px;margin-bottom:10px;}
 .tip strong{color:var(--accent);}
-
 .sl-row{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
 .sl-head{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
 .sl-head b{color:var(--text);font-family:'Space Grotesk',monospace;}
 input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent);cursor:pointer;}
-
 .btn{width:100%;padding:9px 12px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
 .btn+.btn{margin-top:6px;}
 .btn-blue{background:var(--accent);color:#0d1117;}
@@ -44,55 +37,38 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
 .btn-red{background:transparent;color:var(--orange);border:1px solid var(--orange);}
-.btn-red:hover{background:rgba(247,129,102,.1);}
 .btn:disabled{background:var(--border)!important;color:var(--muted)!important;border-color:transparent!important;cursor:not-allowed;filter:none!important;}
-
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:9px;}
 .s-lbl{font-size:10px;color:var(--muted);margin-bottom:2px;}
 .s-val{font-family:'Space Grotesk',monospace;font-size:16px;font-weight:700;color:var(--accent);}
-
-/* progress */
 .prog-wrap{display:none;margin-top:8px;}
 .prog-bar{background:var(--border);border-radius:4px;height:6px;overflow:hidden;}
-.prog-fill{height:100%;background:var(--green);width:0%;transition:width .1s;border-radius:4px;}
+.prog-fill{height:100%;background:var(--green);width:0%;transition:width .05s;border-radius:4px;}
 .prog-txt{font-size:11px;color:var(--muted);margin-top:4px;text-align:center;}
-
-/* CENTER */
 .center{flex:1;background:#111;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 #resultCanvas{max-width:100%;max-height:100%;object-fit:contain;display:none;}
 .center-ph{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--muted);text-align:center;padding:20px;}
 .center-ph svg{opacity:.25;}
 .center-ph p{font-size:13px;}
 .center-ph small{font-size:11px;opacity:.6;}
-
-/* scrubber */
-.scrub-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);padding:10px 16px;display:none;flex-direction:column;gap:6px;z-index:10;}
-.scrub-bar.on{display:flex;}
-.scrub-row{display:flex;align-items:center;gap:10px;}
-#scrubRange{flex:1;-webkit-appearance:none;height:4px;background:var(--border);border-radius:2px;outline:none;cursor:pointer;}
-#scrubRange::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--yellow);cursor:pointer;}
-.scrub-time{font-family:'Space Grotesk',monospace;font-size:12px;color:var(--yellow);white-space:nowrap;}
-
 #videoInput{display:none;}
 </style>
 </head>
 <body>
-
 <header>
   <div class="logo">📸</div>
   <h1>스트로보 궤적 캡쳐</h1>
-  <p>슬로모션 영상 → 다중섬광 사진처럼 합성</p>
+  <p>슬로모션 영상 → 다중섬광 사진 합성</p>
 </header>
-
 <div class="wrap">
   <aside class="side">
 
     <div class="sec">
       <div class="sec-title">① 영상 업로드</div>
       <div class="tip">
-        📱 슬로모션(120·240fps)으로 촬영한 영상을 올리세요.<br>
-        <strong>흰 배경 앞에서 찍으면</strong> 결과가 훨씬 선명해요.
+        슬로모션(120·240fps)으로 촬영한 영상을 올리세요.<br>
+        <strong>밝은 배경 앞</strong>에서 찍으면 더 선명해요.
       </div>
       <input type="file" id="videoInput" accept="video/*">
       <button class="btn btn-blue" onclick="document.getElementById('videoInput').click()">
@@ -103,42 +79,25 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 
     <div class="sec">
       <div class="sec-title">② 합성 설정</div>
-
       <div class="sl-row">
-        <div class="sl-head"><span>프레임 간격 (클수록 점이 듬성)</span><b id="stepVal">3</b>프레임</div>
-        <input type="range" id="stepSlider" min="1" max="30" value="3"
+        <div class="sl-head"><span>프레임 간격 (클수록 점 간격 넓음)</span><b id="stepVal">5</b>프레임</div>
+        <input type="range" id="stepSlider" min="1" max="60" value="5"
                oninput="document.getElementById('stepVal').value=this.value">
       </div>
-
       <div class="sl-row">
         <div class="sl-head"><span>시작 시간</span><b id="startVal">0.0</b>s</div>
         <input type="range" id="startSlider" min="0" max="100" value="0" step="1"
-               oninput="updateStartEnd()">
+               oninput="updateRange()">
       </div>
-
       <div class="sl-row">
         <div class="sl-head"><span>종료 시간</span><b id="endVal">전체</b></div>
         <input type="range" id="endSlider" min="0" max="100" value="100" step="1"
-               oninput="updateStartEnd()">
+               oninput="updateRange()">
       </div>
-
-      <div class="sl-row">
-        <div class="sl-head"><span>프레임 투명도 (낮을수록 잔상 강함)</span><b id="alphaVal">0.6</b></div>
-        <input type="range" id="alphaSlider" min="10" max="100" value="60"
-               oninput="document.getElementById('alphaVal').value=(this.value/100).toFixed(2)">
-      </div>
-
-      <div class="sl-row">
-        <div class="sl-head"><span>배경 프레임 (첫 N프레임을 배경으로)</span><b id="bgVal">1</b></div>
-        <input type="range" id="bgSlider" min="1" max="10" value="1"
-               oninput="document.getElementById('bgVal').value=this.value">
-      </div>
-
       <button class="btn btn-green" id="renderBtn" disabled>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         합성 시작
       </button>
-
       <div class="prog-wrap" id="progWrap">
         <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
         <div class="prog-txt" id="progTxt">처리 중...</div>
@@ -151,202 +110,174 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         이미지 저장
       </button>
-      <button class="btn btn-red" id="resetBtn" disabled style="margin-top:6px">
-        다시 설정
-      </button>
+      <button class="btn btn-red" id="resetBtn" disabled style="margin-top:6px">다시 합성</button>
     </div>
 
     <div class="sec">
       <div class="sec-title">데이터</div>
       <div class="stat-grid">
         <div class="stat-card"><div class="s-lbl">영상 길이</div><div class="s-val" id="stDur">--</div></div>
-        <div class="stat-card"><div class="s-lbl">합성 프레임</div><div class="s-val" id="stFrames">--</div></div>
-        <div class="stat-card"><div class="s-lbl">영상 FPS</div><div class="s-val" id="stFps">--</div></div>
+        <div class="stat-card"><div class="s-lbl">합성 프레임 수</div><div class="s-val" id="stFrames">--</div></div>
         <div class="stat-card"><div class="s-lbl">해상도</div><div class="s-val" id="stRes">--</div></div>
+        <div class="stat-card"><div class="s-lbl">상태</div><div class="s-val" id="stStatus">대기</div></div>
       </div>
     </div>
 
   </aside>
 
-  <!-- CENTER: 결과 이미지 -->
-  <div class="center" id="centerArea">
+  <div class="center">
     <canvas id="resultCanvas"></canvas>
     <div class="center-ph" id="centerPh">
       <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
         <rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/>
       </svg>
       <p>슬로모션 영상을 업로드하고 합성 시작을 누르세요</p>
-      <small>공, 진자, 떨어지는 물체 등 움직이는 물체의 궤적이<br>한 장의 사진처럼 합성됩니다</small>
-    </div>
-
-    <!-- 미리보기 스크러버 -->
-    <div class="scrub-bar" id="scrubBar">
-      <div class="scrub-row">
-        <span style="font-size:11px;color:var(--muted);white-space:nowrap">미리보기</span>
-        <input type="range" id="scrubRange" min="0" max="1000" value="0">
-        <span class="scrub-time" id="scrubTime">0.00s</span>
-      </div>
+      <small>공, 진자 등 움직이는 물체가 한 장에 여러 번 찍힌<br>스트로보스코픽 사진이 만들어집니다</small>
     </div>
   </div>
 </div>
 
-<!-- 숨겨진 비디오 요소 -->
-<video id="vidEl" style="display:none" playsinline></video>
+<video id="vidEl" style="display:none" playsinline crossorigin="anonymous"></video>
 
 <script>
-const videoInput = document.getElementById('videoInput');
-const vidEl      = document.getElementById('vidEl');
-const renderBtn  = document.getElementById('renderBtn');
-const saveBtn    = document.getElementById('saveBtn');
-const resetBtn   = document.getElementById('resetBtn');
+const videoInput   = document.getElementById('videoInput');
+const vidEl        = document.getElementById('vidEl');
+const renderBtn    = document.getElementById('renderBtn');
+const saveBtn      = document.getElementById('saveBtn');
+const resetBtn     = document.getElementById('resetBtn');
 const resultCanvas = document.getElementById('resultCanvas');
-const rc         = resultCanvas.getContext('2d');
-const centerPh   = document.getElementById('centerPh');
-const scrubBar   = document.getElementById('scrubBar');
-const scrubRange = document.getElementById('scrubRange');
-const progWrap   = document.getElementById('progWrap');
-const progFill   = document.getElementById('progFill');
-const progTxt    = document.getElementById('progTxt');
+const rc           = resultCanvas.getContext('2d');
+const centerPh     = document.getElementById('centerPh');
+const progWrap     = document.getElementById('progWrap');
+const progFill     = document.getElementById('progFill');
+const progTxt      = document.getElementById('progTxt');
 
 let duration = 0;
 
-/* 영상 업로드 */
 videoInput.addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
-  const url = URL.createObjectURL(f);
-  vidEl.src = url;
+  vidEl.src = URL.createObjectURL(f);
   vidEl.addEventListener('loadedmetadata', () => {
     duration = vidEl.duration;
-    document.getElementById('stDur').textContent = duration.toFixed(2) + 's';
-    document.getElementById('stRes').textContent = vidEl.videoWidth + '×' + vidEl.videoHeight;
-    // FPS 추정 (영상에서 직접 못 읽으므로 슬로모 기준 안내)
-    document.getElementById('stFps').textContent = '슬로모';
-    updateStartEnd();
+    document.getElementById('stDur').textContent  = duration.toFixed(2) + 's';
+    document.getElementById('stRes').textContent  = vidEl.videoWidth + '×' + vidEl.videoHeight;
+    updateRange();
     renderBtn.disabled = false;
-    scrubBar.classList.add('on');
-
-    // 미리보기 스크러버
-    scrubRange.addEventListener('input', () => {
-      const t = (scrubRange.value / 1000) * duration;
-      vidEl.currentTime = t;
-      document.getElementById('scrubTime').textContent = t.toFixed(2) + 's';
-    });
+    document.getElementById('stStatus').textContent = '준비';
   }, {once:true});
   videoInput.value = '';
 });
 
-function updateStartEnd() {
+function updateRange() {
   if (!duration) return;
   const s = +document.getElementById('startSlider').value / 100 * duration;
-  const e = +document.getElementById('endSlider').value / 100 * duration;
-  document.getElementById('startVal').value = s.toFixed(1);
-  document.getElementById('endVal').textContent = e >= duration - 0.05 ? '전체' : e.toFixed(1) + 's';
+  const e = +document.getElementById('endSlider').value   / 100 * duration;
+  document.getElementById('startVal').textContent = s.toFixed(1);
+  document.getElementById('endVal').textContent   = e >= duration - 0.05 ? '전체' : e.toFixed(1) + 's';
 }
 
-/* seek 헬퍼 */
-function seekTo(t) {
+function seekTo(v, t) {
   return new Promise(res => {
-    vidEl.currentTime = t;
-    vidEl.addEventListener('seeked', res, {once: true});
+    v.currentTime = t;
+    v.addEventListener('seeked', res, {once:true});
   });
 }
 
-/* 합성 시작 */
 renderBtn.addEventListener('click', async () => {
-  if (!vidEl.src) return;
+  if (!duration) return;
 
-  const step     = +document.getElementById('stepSlider').value;
-  const alpha    = +document.getElementById('alphaSlider').value / 100;
-  const bgFrames = +document.getElementById('bgSlider').value;
-  const startT   = +document.getElementById('startSlider').value / 100 * duration;
-  const endT     = +document.getElementById('endSlider').value / 100 * duration;
+  const step   = +document.getElementById('stepSlider').value;
+  const startT = +document.getElementById('startSlider').value / 100 * duration;
+  const endT   = +document.getElementById('endSlider').value   / 100 * duration;
 
   renderBtn.disabled = true;
   progWrap.style.display = 'block';
+  document.getElementById('stStatus').textContent = '처리중';
 
   const vw = vidEl.videoWidth, vh = vidEl.videoHeight;
   resultCanvas.width = vw; resultCanvas.height = vh;
   resultCanvas.style.display = 'block';
   centerPh.style.display = 'none';
 
-  // 오프스크린 캔버스
+  // 오프스크린: 각 프레임 읽기용
   const off = document.createElement('canvas');
   off.width = vw; off.height = vh;
   const oc = off.getContext('2d');
 
-  // ── 1단계: 배경 프레임을 불투명하게 깔기 ──
-  // 영상 시작 부분의 bgFrames개 프레임을 평균내어 배경 생성
+  // ── 핵심 원리 ──
+  // 1) 배경 프레임(startT 이전 또는 첫 프레임)을 불투명하게 깔기
+  // 2) 이후 각 프레임을 'lighter' 모드로 누적
+  //    → 배경(어두운 부분)은 그대로, 물체(밝은 부분)만 추가로 쌓임
+  //    → 결과: 물체가 여러 위치에 찍힌 스트로보 사진
+
+  // 배경: startT 직전 프레임
   progTxt.textContent = '배경 추출 중...';
+  const bgT = Math.max(0, startT - 0.1);
+  await seekTo(vidEl, bgT);
+  oc.drawImage(vidEl, 0, 0);
+
+  // 캔버스를 배경으로 초기화 (불투명)
   rc.globalAlpha = 1;
   rc.globalCompositeOperation = 'source-over';
+  rc.drawImage(off, 0, 0);
 
-  // 배경: startT 직전 프레임들을 평균
-  const bgStep = Math.max(0.033, (startT > 0.5 ? startT : 0.5) / bgFrames);
-  for (let i = 0; i < bgFrames; i++) {
-    const t = Math.max(0, startT - (bgFrames - i) * bgStep);
-    await seekTo(t);
-    oc.drawImage(vidEl, 0, 0);
-    if (i === 0) {
-      rc.drawImage(off, 0, 0);  // 첫 배경은 불투명
-    } else {
-      rc.globalAlpha = 1 / (i + 1);
-      rc.globalCompositeOperation = 'source-over';
-      rc.drawImage(off, 0, 0);
-    }
-  }
-
-  // ── 2단계: 움직이는 물체 프레임들을 alpha로 누적 ──
-  rc.globalCompositeOperation = 'source-over';
-
-  // 프레임 간격을 시간으로 환산 (슬로모 240fps 기준)
-  // 실제 프레임레이트를 모르므로 총 프레임 수 = duration * 30 (재생 기준)으로 추정
-  const playFps = 30;
-  const intervalSec = step / playFps;
+  // 합성할 시간 목록 생성
+  // 재생 기준 30fps → 프레임 간격을 초로 환산
+  const intervalSec = step / 30;
   const times = [];
   for (let t = startT; t <= endT + 0.001; t += intervalSec) {
     times.push(Math.min(t, endT));
   }
   document.getElementById('stFrames').textContent = times.length;
 
+  // ── lighter 모드로 프레임 누적 ──
+  // lighter: 각 픽셀 RGB를 더함 → 밝은 물체는 더 밝아지고 어두운 배경은 거의 변화 없음
+  // 단, 너무 많이 쌓이면 포화(흰색)되므로 alpha로 조절
+  // 물체가 어두운 경우 → 'source-over' + 낮은 alpha로 대신 사용
+
+  // 두 가지 모드: lighter(밝은 물체용) + source-over 낮은 alpha(어두운 물체용)
+  // 여기서는 lighter를 기본으로, alpha=0.8로 포화 방지
+  rc.globalCompositeOperation = 'lighter';
+  rc.globalAlpha = 0.7;
+
   for (let i = 0; i < times.length; i++) {
-    await seekTo(times[i]);
+    await seekTo(vidEl, times[i]);
     oc.drawImage(vidEl, 0, 0);
-    rc.globalAlpha = alpha;
     rc.drawImage(off, 0, 0);
 
-    const pct = Math.round((i / times.length) * 100);
+    const pct = Math.round(((i + 1) / times.length) * 100);
     progFill.style.width = pct + '%';
-    progTxt.textContent = `합성 중... ${pct}% (${i+1}/${times.length} 프레임)`;
+    progTxt.textContent  = `합성 중... ${pct}% (${i+1}/${times.length})`;
+
     if (i % 3 === 0) await new Promise(r => setTimeout(r, 0));
   }
 
   progFill.style.width = '100%';
-  progTxt.textContent = '완료!';
-  setTimeout(() => { progWrap.style.display = 'none'; }, 1000);
+  progTxt.textContent  = '완료! ✓';
+  setTimeout(() => { progWrap.style.display = 'none'; }, 1500);
 
   renderBtn.disabled = false;
-  saveBtn.disabled = false;
-  resetBtn.disabled = false;
+  saveBtn.disabled   = false;
+  resetBtn.disabled  = false;
+  document.getElementById('stStatus').textContent = '완료';
 });
 
-/* 저장 */
 saveBtn.addEventListener('click', () => {
   resultCanvas.toBlob(blob => {
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = '스트로보_궤적_' + new Date().toISOString().slice(0,19).replace(/:/g,'-') + '.png';
+    a.href     = URL.createObjectURL(blob);
+    a.download = '스트로보_' + new Date().toISOString().slice(0,19).replace(/:/g,'-') + '.png';
     a.click();
   }, 'image/png');
 });
 
-/* 리셋 */
 resetBtn.addEventListener('click', () => {
   rc.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
   resultCanvas.style.display = 'none';
   centerPh.style.display = 'flex';
-  saveBtn.disabled = true;
-  resetBtn.disabled = true;
+  saveBtn.disabled = true; resetBtn.disabled = true;
   document.getElementById('stFrames').textContent = '--';
+  document.getElementById('stStatus').textContent = '준비';
 });
 </script>
 </body>
