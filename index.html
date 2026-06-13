@@ -6,13 +6,13 @@
 <title>스트로보 궤적 캡쳐</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
-:root{--bg:#0d1117;--panel:#161b22;--card:#1c2333;--border:#30363d;--accent:#58a6ff;--green:#3fb950;--orange:#f78166;--yellow:#e3b341;--text:#e6edf3;--muted:#8b949e;}
+:root{--bg:#0d1117;--panel:#161b22;--card:#1c2333;--border:#30363d;--accent:#58a6ff;--green:#3fb950;--orange:#f78166;--text:#e6edf3;--muted:#8b949e;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
 header{display:flex;align-items:center;gap:10px;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--border);}
 .logo{font-size:20px;}header h1{font-size:15px;font-weight:700;}header p{font-size:12px;color:var(--muted);margin-left:8px;}
 .wrap{display:flex;flex:1;overflow:hidden;min-height:0;}
-.side{width:270px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
+.side{width:275px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
 .sec{padding:16px;border-bottom:1px solid var(--border);}
 .sec-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 .tip{font-size:11px;color:var(--muted);line-height:1.65;padding:8px 10px;background:rgba(88,166,255,.05);border:1px solid rgba(88,166,255,.15);border-radius:6px;margin-bottom:10px;}
@@ -22,6 +22,13 @@ header{display:flex;align-items:center;gap:10px;padding:12px 20px;background:var
 .sl-head b{color:var(--text);font-family:'Space Grotesk',monospace;}
 input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent);cursor:pointer;}
+
+/* 숫자 직접 입력 */
+.num-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.num-row label{font-size:11px;color:var(--muted);flex:1;}
+.num-input{width:70px;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:'Space Grotesk',monospace;font-size:13px;font-weight:600;text-align:right;}
+.num-input:focus{outline:none;border-color:var(--accent);}
+
 .btn{width:100%;padding:9px 12px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
 .btn+.btn{margin-top:6px;}
 .btn-blue{background:var(--accent);color:#0d1117;}.btn-blue:hover{filter:brightness(1.15);}
@@ -30,19 +37,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .btn-red{background:transparent;color:var(--orange);border:1px solid var(--orange);}
 .btn:disabled{background:var(--border)!important;color:var(--muted)!important;border-color:transparent!important;cursor:not-allowed;filter:none!important;}
 
-/* 모드 선택 버튼 */
-.mode-row{display:flex;gap:6px;margin-bottom:10px;}
-.mode-btn{flex:1;padding:8px 4px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s;text-align:center;}
-.mode-btn.active{border-color:var(--accent);background:rgba(88,166,255,.15);color:var(--accent);}
-
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:9px;}
 .s-lbl{font-size:10px;color:var(--muted);margin-bottom:2px;}
-.s-val{font-family:'Space Grotesk',monospace;font-size:16px;font-weight:700;color:var(--accent);}
+.s-val{font-family:'Space Grotesk',monospace;font-size:15px;font-weight:700;color:var(--accent);}
 .prog-wrap{display:none;margin-top:8px;}
 .prog-bar{background:var(--border);border-radius:4px;height:6px;overflow:hidden;}
 .prog-fill{height:100%;background:var(--green);width:0%;transition:width .05s;border-radius:4px;}
 .prog-txt{font-size:11px;color:var(--muted);margin-top:4px;text-align:center;}
+
 .center{flex:1;background:#111;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 #resultCanvas{max-width:100%;max-height:100%;object-fit:contain;display:none;}
 .center-ph{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--muted);text-align:center;padding:20px;}
@@ -61,6 +64,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 
     <div class="sec">
       <div class="sec-title">① 영상 업로드</div>
+      <div class="tip">
+        영상 <strong>첫 부분(0.5초)</strong>에 물체 없이 배경만 보이게 찍으면<br>
+        배경 차분이 훨씬 정확해요.
+      </div>
       <input type="file" id="videoInput" accept="video/*">
       <button class="btn btn-blue" onclick="document.getElementById('videoInput').click()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
@@ -69,38 +76,42 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     </div>
 
     <div class="sec">
-      <div class="sec-title">② 물체 색상</div>
-      <div class="tip">물체와 배경의 밝기 관계에 따라 선택하세요.</div>
-      <div class="mode-row">
-        <button class="mode-btn" id="modeLight" onclick="setMode('light')">
-          ☀️ 밝은 물체<br><span style="font-size:10px;color:var(--muted)">흰 공, 오렌지 공</span>
-        </button>
-        <button class="mode-btn active" id="modeDark" onclick="setMode('dark')">
-          🌑 어두운 물체<br><span style="font-size:10px;color:var(--muted)">검정 마우스 등</span>
-        </button>
-      </div>
-    </div>
+      <div class="sec-title">② 합성 설정</div>
 
-    <div class="sec">
-      <div class="sec-title">③ 합성 설정</div>
+      <div class="tip">
+        <strong>합성 프레임 수</strong>: 몇 개의 위치를 찍을지 직접 입력하세요.<br>
+        예) 10 → 운동 구간을 10등분해서 10개 위치 합성
+      </div>
+
+      <!-- 합성 프레임 수 직접 입력 -->
+      <div class="num-row">
+        <label>합성 프레임 수</label>
+        <input type="number" class="num-input" id="frameCount" value="10" min="2" max="100">
+      </div>
+
+      <!-- 배경 구간 -->
+      <div class="num-row">
+        <label>배경 구간 (영상 시작 몇 초)</label>
+        <input type="number" class="num-input" id="bgSec" value="0.5" min="0.1" max="5" step="0.1">
+      </div>
+
+      <!-- 운동 시작/종료 -->
       <div class="sl-row">
-        <div class="sl-head"><span>프레임 간격 (클수록 점 간격 넓음)</span><b id="stepVal">5</b>프레임</div>
-        <input type="range" id="stepSlider" min="1" max="60" value="5"
-               oninput="document.getElementById('stepVal').value=this.value">
+        <div class="sl-head"><span>운동 시작 시간</span><b id="startVal">--</b>s</div>
+        <input type="range" id="startSlider" min="0" max="100" value="20" step="1" oninput="updateRange()">
       </div>
       <div class="sl-row">
-        <div class="sl-head"><span>투명도 (낮을수록 물체 선명)</span><b id="alphaVal">0.7</b></div>
-        <input type="range" id="alphaSlider" min="10" max="100" value="70"
-               oninput="document.getElementById('alphaVal').value=(this.value/100).toFixed(2)">
-      </div>
-      <div class="sl-row">
-        <div class="sl-head"><span>시작 시간</span><b id="startVal">0.0</b>s</div>
-        <input type="range" id="startSlider" min="0" max="100" value="0" step="1" oninput="updateRange()">
-      </div>
-      <div class="sl-row">
-        <div class="sl-head"><span>종료 시간</span><b id="endVal">전체</b></div>
+        <div class="sl-head"><span>운동 종료 시간</span><b id="endVal">--</b>s</div>
         <input type="range" id="endSlider" min="0" max="100" value="100" step="1" oninput="updateRange()">
       </div>
+
+      <!-- 차분 임계값 -->
+      <div class="sl-row">
+        <div class="sl-head"><span>감도 (배경 차이 임계값)</span><b id="threshVal">25</b></div>
+        <input type="range" id="threshSlider" min="5" max="80" value="25"
+               oninput="document.getElementById('threshVal').value=this.value">
+      </div>
+
       <button class="btn btn-green" id="renderBtn" disabled>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         합성 시작
@@ -112,7 +123,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     </div>
 
     <div class="sec">
-      <div class="sec-title">④ 결과</div>
+      <div class="sec-title">③ 결과</div>
       <button class="btn btn-ghost" id="saveBtn" disabled>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         이미지 저장
@@ -124,7 +135,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <div class="sec-title">데이터</div>
       <div class="stat-grid">
         <div class="stat-card"><div class="s-lbl">영상 길이</div><div class="s-val" id="stDur">--</div></div>
-        <div class="stat-card"><div class="s-lbl">합성 프레임</div><div class="s-val" id="stFrames">--</div></div>
+        <div class="stat-card"><div class="s-lbl">실제 합성 수</div><div class="s-val" id="stFrames">--</div></div>
         <div class="stat-card"><div class="s-lbl">해상도</div><div class="s-val" id="stRes">--</div></div>
         <div class="stat-card"><div class="s-lbl">상태</div><div class="s-val" id="stStatus">대기</div></div>
       </div>
@@ -139,7 +150,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/>
       </svg>
       <p>슬로모션 영상을 업로드하고 합성 시작을 누르세요</p>
-      <small>물체가 한 장에 여러 번 찍힌 스트로보스코픽 사진이 만들어집니다</small>
+      <small>배경 차분으로 물체만 추출해 합성합니다<br>물체 색상과 무관하게 작동합니다</small>
     </div>
   </div>
 </div>
@@ -160,13 +171,6 @@ const progFill     = document.getElementById('progFill');
 const progTxt      = document.getElementById('progTxt');
 
 let duration = 0;
-let mode = 'dark'; // 기본: 어두운 물체
-
-function setMode(m) {
-  mode = m;
-  document.getElementById('modeLight').classList.toggle('active', m === 'light');
-  document.getElementById('modeDark').classList.toggle('active',  m === 'dark');
-}
 
 videoInput.addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
@@ -186,77 +190,115 @@ function updateRange() {
   if (!duration) return;
   const s = +document.getElementById('startSlider').value / 100 * duration;
   const e = +document.getElementById('endSlider').value   / 100 * duration;
-  document.getElementById('startVal').textContent = s.toFixed(1);
-  document.getElementById('endVal').textContent   = e >= duration - 0.05 ? '전체' : e.toFixed(1) + 's';
+  document.getElementById('startVal').textContent = s.toFixed(2);
+  document.getElementById('endVal').textContent   = e.toFixed(2);
 }
 
 function seekTo(t) {
-  return new Promise(res => { vidEl.currentTime = t; vidEl.addEventListener('seeked', res, {once:true}); });
+  return new Promise(res => {
+    vidEl.currentTime = t;
+    vidEl.addEventListener('seeked', res, {once:true});
+  });
 }
 
 renderBtn.addEventListener('click', async () => {
   if (!duration) return;
 
-  const step    = +document.getElementById('stepSlider').value;
-  const alpha   = +document.getElementById('alphaSlider').value / 100;
-  const startT  = +document.getElementById('startSlider').value / 100 * duration;
-  const endT    = +document.getElementById('endSlider').value   / 100 * duration;
+  const frameCount = Math.max(2, Math.min(100, +document.getElementById('frameCount').value));
+  const bgSec      = +document.getElementById('bgSec').value;
+  const startT     = +document.getElementById('startSlider').value / 100 * duration;
+  const endT       = +document.getElementById('endSlider').value   / 100 * duration;
+  const thresh     = +document.getElementById('threshSlider').value;
 
   renderBtn.disabled = true;
   progWrap.style.display = 'block';
   document.getElementById('stStatus').textContent = '처리중';
+  document.getElementById('stFrames').textContent = frameCount;
 
   const vw = vidEl.videoWidth, vh = vidEl.videoHeight;
+
+  // 오프스크린 캔버스들
+  const bgCanvas = document.createElement('canvas');
+  bgCanvas.width = vw; bgCanvas.height = vh;
+  const bgc = bgCanvas.getContext('2d');
+
+  const tmpCanvas = document.createElement('canvas');
+  tmpCanvas.width = vw; tmpCanvas.height = vh;
+  const tc = tmpCanvas.getContext('2d');
+
+  const maskCanvas = document.createElement('canvas');
+  maskCanvas.width = vw; maskCanvas.height = vh;
+  const mc = maskCanvas.getContext('2d');
+
+  // ── 1단계: 배경 추출 (bgSec 구간 여러 프레임 평균) ──
+  progTxt.textContent = '배경 추출 중...';
+  const bgFrames = 5;
+  const bgPixels = new Float32Array(vw * vh * 4); // 누적용
+
+  for (let i = 0; i < bgFrames; i++) {
+    const t = Math.min(bgSec * (i + 1) / bgFrames, bgSec);
+    await seekTo(t);
+    bgc.drawImage(vidEl, 0, 0);
+    const d = bgc.getImageData(0, 0, vw, vh).data;
+    for (let j = 0; j < d.length; j++) bgPixels[j] += d[j];
+  }
+  // 평균
+  const bgData = new Uint8ClampedArray(vw * vh * 4);
+  for (let j = 0; j < bgData.length; j++) bgData[j] = bgPixels[j] / bgFrames;
+  const bgImageData = new ImageData(bgData, vw, vh);
+
+  // ── 2단계: 결과 캔버스에 배경 깔기 ──
   resultCanvas.width = vw; resultCanvas.height = vh;
   resultCanvas.style.display = 'block';
   centerPh.style.display = 'none';
 
-  const off = document.createElement('canvas');
-  off.width = vw; off.height = vh;
-  const oc = off.getContext('2d');
-
-  // ── 배경 프레임 깔기 ──
-  // startT 직전 프레임을 배경으로 사용
-  progTxt.textContent = '배경 추출 중...';
-  await seekTo(Math.max(0, startT - 0.05));
   rc.globalAlpha = 1;
   rc.globalCompositeOperation = 'source-over';
-  rc.drawImage(vidEl, 0, 0);
+  bgc.putImageData(bgImageData, 0, 0);
+  rc.drawImage(bgCanvas, 0, 0);
 
-  // 합성 시간 목록
-  const intervalSec = step / 30;
+  // ── 3단계: 운동 구간을 N등분하여 각 프레임에서 물체만 추출해 합성 ──
   const times = [];
-  for (let t = startT; t <= endT + 0.001; t += intervalSec) {
-    times.push(Math.min(t, endT));
-  }
-  document.getElementById('stFrames').textContent = times.length;
-
-  // ── 핵심: 모드별 합성 ──
-  // 밝은 물체: lighter → 밝은 픽셀 누적, 어두운 배경은 변화 적음
-  // 어두운 물체: multiply → 어두운 픽셀 누적, 밝은 배경은 변화 적음
-  //   but multiply는 CSS filter처럼 동작해 Canvas에서 지원 안 됨
-  //   대신: source-over + 낮은 alpha로 여러 번 덧칠 → 어두운 물체가 진해짐
-  //   또는: darken (각 픽셀에서 더 어두운 값 선택) → 가장 정확
-
-  if (mode === 'light') {
-    rc.globalCompositeOperation = 'lighter';
-    rc.globalAlpha = alpha * 0.5; // lighter는 포화 빠르므로 더 낮게
-  } else {
-    // 어두운 물체: darken 모드
-    // darken: 각 픽셀에서 min(현재, 새 프레임) → 어두운 픽셀(물체)이 누적
-    rc.globalCompositeOperation = 'darken';
-    rc.globalAlpha = 1; // darken은 alpha 필요 없음 (픽셀값 비교)
+  for (let i = 0; i < frameCount; i++) {
+    times.push(startT + (endT - startT) * i / (frameCount - 1));
   }
 
   for (let i = 0; i < times.length; i++) {
     await seekTo(times[i]);
-    oc.drawImage(vidEl, 0, 0);
-    rc.drawImage(off, 0, 0);
+    tc.drawImage(vidEl, 0, 0);
+    const currData = tc.getImageData(0, 0, vw, vh).data;
+
+    // 배경 차분: 현재 프레임 - 배경 → 차이가 큰 픽셀 = 물체
+    const maskData = new Uint8ClampedArray(vw * vh * 4);
+    for (let px = 0; px < vw * vh; px++) {
+      const j = px * 4;
+      const dr = Math.abs(currData[j]   - bgData[j]);
+      const dg = Math.abs(currData[j+1] - bgData[j+1]);
+      const db = Math.abs(currData[j+2] - bgData[j+2]);
+      const diff = (dr + dg + db) / 3;
+
+      if (diff > thresh) {
+        // 물체 픽셀: 원래 색 그대로, 불투명하게
+        maskData[j]   = currData[j];
+        maskData[j+1] = currData[j+1];
+        maskData[j+2] = currData[j+2];
+        maskData[j+3] = Math.min(255, Math.round(diff * 4)); // 차이가 클수록 선명
+      } else {
+        // 배경 픽셀: 투명
+        maskData[j+3] = 0;
+      }
+    }
+
+    // 마스크를 결과에 합성
+    mc.putImageData(new ImageData(maskData, vw, vh), 0, 0);
+    rc.globalAlpha = 1;
+    rc.globalCompositeOperation = 'source-over';
+    rc.drawImage(maskCanvas, 0, 0);
 
     const pct = Math.round(((i + 1) / times.length) * 100);
     progFill.style.width = pct + '%';
     progTxt.textContent  = `합성 중... ${pct}% (${i+1}/${times.length})`;
-    if (i % 3 === 0) await new Promise(r => setTimeout(r, 0));
+    if (i % 2 === 0) await new Promise(r => setTimeout(r, 0));
   }
 
   progFill.style.width = '100%';
