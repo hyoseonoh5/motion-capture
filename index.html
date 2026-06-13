@@ -22,7 +22,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR','Noto San
 .lang-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
 .lang-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 @media(max-width:480px){.lang-grid{grid-template-columns:repeat(3,1fr);}}
-.lang-btn{padding:12px 6px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s;}
+.lang-btn{padding:12px 6px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s;touch-action:manipulation;-webkit-tap-highlight-color:rgba(88,166,255,.3);}
 .lang-btn:hover{border-color:var(--accent);background:rgba(88,166,255,.08);transform:translateY(-1px);}
 .lang-btn .flag{font-size:22px;}
 .lang-btn .lname{font-size:12px;}
@@ -118,19 +118,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
   <div class="lang-body">
     <div class="lang-label">🌐 Language / 언어</div>
     <div class="lang-grid">
-      <button class="lang-btn" onclick="setLang('ko')"><span class="flag">🇰🇷</span><span class="lname">한국어</span><span class="lsub">Korean</span></button>
-      <button class="lang-btn" onclick="setLang('en')"><span class="flag">🇺🇸</span><span class="lname">English</span><span class="lsub">English</span></button>
-      <button class="lang-btn" onclick="setLang('es')"><span class="flag">🇪🇸</span><span class="lname">Español</span><span class="lsub">Spanish</span></button>
-      <button class="lang-btn" onclick="setLang('fr')"><span class="flag">🇫🇷</span><span class="lname">Français</span><span class="lsub">French</span></button>
-      <button class="lang-btn" onclick="setLang('de')"><span class="flag">🇩🇪</span><span class="lname">Deutsch</span><span class="lsub">German</span></button>
-      <button class="lang-btn" onclick="setLang('ja')"><span class="flag">🇯🇵</span><span class="lname">日本語</span><span class="lsub">Japanese</span></button>
-      <button class="lang-btn" onclick="setLang('zh')"><span class="flag">🇨🇳</span><span class="lname">中文</span><span class="lsub">Chinese</span></button>
-      <button class="lang-btn" onclick="setLang('ru')"><span class="flag">🇷🇺</span><span class="lname">Русский</span><span class="lsub">Russian</span></button>
-      <button class="lang-btn" onclick="setLang('ar')"><span class="flag">🇸🇦</span><span class="lname">العربية</span><span class="lsub">Arabic</span></button>
-      <button class="lang-btn" onclick="setLang('pt')"><span class="flag">🇧🇷</span><span class="lname">Português</span><span class="lsub">Portuguese</span></button>
-      <button class="lang-btn" onclick="setLang('hi')"><span class="flag">🇮🇳</span><span class="lname">हिन्दी</span><span class="lsub">Hindi</span></button>
-      <button class="lang-btn" onclick="setLang('id')"><span class="flag">🇮🇩</span><span class="lname">Indonesia</span><span class="lsub">Indonesian</span></button>
-      <button class="lang-btn" onclick="setLang('sv')"><span class="flag">🇸🇪</span><span class="lname">Svenska</span><span class="lsub">Swedish</span></button>
+      <button class="lang-btn" data-lang="ko" onclick="setLang('ko')"><span class="flag">🇰🇷</span><span class="lname">한국어</span><span class="lsub">Korean</span></button>
+      <button class="lang-btn" data-lang="en" onclick="setLang('en')"><span class="flag">🇺🇸</span><span class="lname">English</span><span class="lsub">English</span></button>
+      <button class="lang-btn" data-lang="es" onclick="setLang('es')"><span class="flag">🇪🇸</span><span class="lname">Español</span><span class="lsub">Spanish</span></button>
+      <button class="lang-btn" data-lang="fr" onclick="setLang('fr')"><span class="flag">🇫🇷</span><span class="lname">Français</span><span class="lsub">French</span></button>
+      <button class="lang-btn" data-lang="de" onclick="setLang('de')"><span class="flag">🇩🇪</span><span class="lname">Deutsch</span><span class="lsub">German</span></button>
+      <button class="lang-btn" data-lang="ja" onclick="setLang('ja')"><span class="flag">🇯🇵</span><span class="lname">日本語</span><span class="lsub">Japanese</span></button>
+      <button class="lang-btn" data-lang="zh" onclick="setLang('zh')"><span class="flag">🇨🇳</span><span class="lname">中文</span><span class="lsub">Chinese</span></button>
+      <button class="lang-btn" data-lang="ru" onclick="setLang('ru')"><span class="flag">🇷🇺</span><span class="lname">Русский</span><span class="lsub">Russian</span></button>
+      <button class="lang-btn" data-lang="ar" onclick="setLang('ar')"><span class="flag">🇸🇦</span><span class="lname">العربية</span><span class="lsub">Arabic</span></button>
+      <button class="lang-btn" data-lang="pt" onclick="setLang('pt')"><span class="flag">🇧🇷</span><span class="lname">Português</span><span class="lsub">Portuguese</span></button>
+      <button class="lang-btn" data-lang="hi" onclick="setLang('hi')"><span class="flag">🇮🇳</span><span class="lname">हिन्दी</span><span class="lsub">Hindi</span></button>
+      <button class="lang-btn" data-lang="id" onclick="setLang('id')"><span class="flag">🇮🇩</span><span class="lname">Indonesia</span><span class="lsub">Indonesian</span></button>
+      <button class="lang-btn" data-lang="sv" onclick="setLang('sv')"><span class="flag">🇸🇪</span><span class="lname">Svenska</span><span class="lsub">Swedish</span></button>
     </div>
   </div>
 </div>
@@ -176,7 +176,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
       <div class="sec">
         <div class="sec-title" id="secUpload"></div>
         <div class="atip" id="uploadTip"></div>
-        <input type="file" id="videoInput" accept="video/*">
         <button class="btn btn-blue" onclick="document.getElementById('videoInput').click()">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
           <span id="btnUpload"></span>
@@ -206,6 +205,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
         <button class="btn btn-ghost" id="saveBtn" disabled><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span id="btnSave"></span></button>
         <button class="btn btn-red" id="resetBtn" disabled style="margin-top:5px"><span id="btnReset"></span></button>
       </div>
+      <div class="sec">
+        <div class="sec-title" id="secData"></div>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="s-lbl" id="lblDur"></div><div class="s-val" id="stDur">--</div></div>
+          <div class="stat-card"><div class="s-lbl" id="lblFr"></div><div class="s-val" id="stFrames">--</div></div>
+          <div class="stat-card"><div class="s-lbl" id="lblRes"></div><div class="s-val" id="stRes">--</div></div>
+          <div class="stat-card"><div class="s-lbl" id="lblStat"></div><div class="s-val" id="stStatus"></div></div>
+        </div>
       </div>
     </aside>
     <div class="center" id="centerArea">
@@ -218,6 +225,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
   </div>
 </div>
 <video id="vidEl" style="display:none" playsinline></video>
+<input type="file" id="videoInput" accept="video/*" style="display:none">
 
 <script>
 const T = {
@@ -558,15 +566,36 @@ let duration=0,vidW=0,vidH=0;
 
 videoInput.addEventListener('change',e=>{
   const f=e.target.files[0];if(!f)return;
-  vidEl.src=URL.createObjectURL(f);
-  vidEl.addEventListener('loadedmetadata',()=>{
-    duration=vidEl.duration;vidW=vidEl.videoWidth;vidH=vidEl.videoHeight;
+  const url=URL.createObjectURL(f);
+  let activated=false;
+  
+  function onMeta(){
+    if(activated)return;
+    if(!vidEl.duration||vidEl.duration===0)return;
+    activated=true;
+    duration=vidEl.duration;
+    vidW=vidEl.videoWidth||320;
+    vidH=vidEl.videoHeight||240;
     document.getElementById('stDur').textContent=duration.toFixed(2)+'s';
     document.getElementById('stRes').textContent=vidW+'×'+vidH;
-    updateRange();renderBtn.disabled=false;
+    updateRange();
+    renderBtn.disabled=false;
     document.getElementById('stStatus').textContent=T[lang].sready;
     adjustLayout();
-  },{once:true});
+  }
+  
+  vidEl.addEventListener('loadedmetadata', onMeta, {once:true});
+  vidEl.addEventListener('loadeddata',     onMeta, {once:true});
+  vidEl.addEventListener('canplay',        onMeta, {once:true});
+  vidEl.addEventListener('durationchange', onMeta, {once:true});
+  
+  // 폴백 타이머들
+  [500,1000,2000,3000].forEach(ms=>{
+    setTimeout(()=>{ if(!activated && vidEl.duration>0) onMeta(); }, ms);
+  });
+  
+  vidEl.src=url;
+  vidEl.load();
   videoInput.value='';
 });
 
@@ -630,7 +659,7 @@ saveBtn.addEventListener('click',()=>{
   if(isMobile){
     const url=resultCanvas.toDataURL('image/png');
     const w=window.open();
-    if(w){w.document.write(`<html><head><meta name="viewport" content="width=device-width"><title>Strobo</title><style>body{margin:0;background:#000;display:flex;flex-direction:column;align-items:center;padding:12px;gap:10px;}img{max-width:100%;border-radius:8px;}p{color:#aaa;font-size:13px;font-family:sans-serif;text-align:center;}</style></head><body><p>${t.popup}</p><img src="${url}"></body></html>`);}
+    if(w){w.document.write(`<html><head><meta name="viewport" content="width=device-width"><title>Strobo</title><style>body{margin:0;background:#000;display:flex;flex-direction:column;align-items:center;padding:12px;gap:10px;}img{max-width:100%;border-radius:8px;}p{color:#aaa;font-size:13px;font-family:sans-serif;text-align:center;}<\/style><\/head><body><p>${t.popup}</p><img src="${url}"><\/body><\/html>`);}
     else alert(t.popblock);
   }else{resultCanvas.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='strobo_'+Date.now()+'.png';a.click();},'image/png');}
 });
@@ -643,6 +672,15 @@ resetBtn.addEventListener('click',()=>{
   document.getElementById('stStatus').textContent=T[lang].sready;
 });
 window.addEventListener('resize',adjustLayout);
+
+// 모바일 터치 지원: lang-btn 터치 이벤트
+document.querySelectorAll('.lang-btn').forEach(btn=>{
+  btn.addEventListener('touchend', function(e){
+    e.preventDefault();
+    const l = this.getAttribute('data-lang');
+    if(l) setLang(l);
+  }, {passive:false});
+});
 </script>
 </body>
 </html>
