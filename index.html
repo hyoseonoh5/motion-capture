@@ -1,306 +1,725 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>스트로보 궤적 캡쳐</title>
+<title>Strobo Motion Capture</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
-:root{--bg:#0d1117;--panel:#161b22;--card:#1c2333;--border:#30363d;--accent:#58a6ff;--green:#3fb950;--orange:#f78166;--text:#e6edf3;--muted:#8b949e;}
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Noto+Sans+KR:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap');
+:root{--bg:#0d1117;--panel:#161b22;--card:#1c2333;--border:#30363d;--accent:#58a6ff;--green:#3fb950;--orange:#f78166;--yellow:#e3b341;--text:#e6edf3;--muted:#8b949e;}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
-header{display:flex;align-items:center;gap:10px;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--border);}
-.logo{font-size:20px;}header h1{font-size:15px;font-weight:700;}header p{font-size:12px;color:var(--muted);margin-left:8px;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR','Noto Sans JP','Noto Sans SC',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── 언어 선택 화면 ── */
+#langScreen{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;overflow-y:auto;}
+.lang-hero{background:linear-gradient(160deg,#0d1f3c 0%,#0d1117 60%);border-bottom:1px solid var(--border);padding:32px 24px 28px;text-align:center;flex-shrink:0;}
+.lang-hero .hero-logo{font-size:48px;margin-bottom:12px;}
+.lang-hero .hero-app{font-size:13px;color:var(--accent);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;}
+.lang-hero .hero-slogan{font-size:17px;font-weight:700;line-height:1.65;color:var(--text);max-width:500px;margin:0 auto 10px;}
+.lang-hero .hero-slogan em{color:var(--accent);font-style:normal;}
+.lang-hero .hero-sub{font-size:12px;color:var(--muted);margin-top:6px;}
+.lang-body{padding:20px 24px;max-width:560px;margin:0 auto;width:100%;}
+.lang-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.lang-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+@media(max-width:480px){.lang-grid{grid-template-columns:repeat(3,1fr);}}
+.lang-btn{padding:12px 6px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s;}
+.lang-btn:hover{border-color:var(--accent);background:rgba(88,166,255,.08);transform:translateY(-1px);}
+.lang-btn .flag{font-size:22px;}
+.lang-btn .lname{font-size:12px;}
+.lang-btn .lsub{font-size:10px;color:var(--muted);}
+
+/* ── 팁 화면 ── */
+#tipScreen{position:fixed;inset:0;background:var(--bg);z-index:100;display:none;flex-direction:column;overflow-y:auto;}
+.tip-header{background:var(--panel);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.tip-header .logo{font-size:20px;}.tip-header h1{font-size:15px;font-weight:700;}
+.tip-body{flex:1;padding:20px;max-width:640px;margin:0 auto;width:100%;}
+.tip-badge{display:inline-block;background:rgba(88,166,255,.15);border:1px solid rgba(88,166,255,.3);border-radius:20px;color:var(--accent);font-size:12px;font-weight:700;padding:4px 12px;margin-bottom:14px;}
+.tip-body h2{font-size:17px;font-weight:700;margin-bottom:6px;line-height:1.4;}
+.tip-body .subtitle{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6;white-space:pre-line;}
+.tip-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.tip-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;}
+.tip-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.tip-num.n0{background:rgba(88,166,255,.2);color:var(--accent);}
+.tip-num.n1{background:rgba(63,185,80,.2);color:var(--green);}
+.tip-num.n2{background:rgba(227,179,65,.2);color:var(--yellow);}
+.tip-num.n3{background:rgba(188,140,255,.2);color:#bc8cff;}
+.tip-num.n4{background:rgba(247,129,102,.2);color:var(--orange);}
+.tip-title{font-size:13px;font-weight:700;margin-bottom:4px;line-height:1.4;}
+.tip-desc{font-size:11px;color:var(--muted);line-height:1.7;}
+.tip-desc strong{color:var(--text);}.tip-desc em{color:var(--accent);font-style:normal;font-weight:600;}
+.tip-footer{background:var(--panel);border-top:1px solid var(--border);padding:14px 20px;flex-shrink:0;}
+.btn-start{width:100%;max-width:640px;margin:0 auto;display:flex;padding:13px;border-radius:10px;border:none;cursor:pointer;background:var(--green);color:#0d1117;font-family:inherit;font-size:14px;font-weight:700;align-items:center;justify-content:center;gap:8px;transition:filter .15s;}
+.btn-start:hover{filter:brightness(1.1);}
+
+/* ── 메인 앱 ── */
+#appScreen{display:none;flex:1;flex-direction:column;}
+#appScreen.active{display:flex;}
+header{display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;}
+.logo{font-size:18px;}
+header h1{font-size:14px;font-weight:700;}
+.hdr-right{margin-left:auto;display:flex;gap:5px;}
+.hdr-btn{padding:5px 9px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;font-family:inherit;transition:all .15s;}
+.hdr-btn:hover{border-color:var(--accent);color:var(--accent);}
 .wrap{display:flex;flex:1;overflow:hidden;min-height:0;}
-.side{width:275px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
-.sec{padding:16px;border-bottom:1px solid var(--border);}
-.sec-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
-.tip{font-size:11px;color:var(--muted);line-height:1.65;padding:8px 10px;background:rgba(88,166,255,.05);border:1px solid rgba(88,166,255,.15);border-radius:6px;margin-bottom:10px;}
-.tip strong{color:var(--accent);}
-.sl-row{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.side{width:270px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
+@media(max-width:600px){.wrap{flex-direction:column;overflow-y:auto;}.side{width:100%;border-right:none;border-bottom:1px solid var(--border);overflow-y:visible;flex-shrink:0;}.center{min-height:50vw;flex-shrink:0;}}
+.sec{padding:14px 16px;border-bottom:1px solid var(--border);}
+.sec-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.atip{font-size:11px;color:var(--muted);line-height:1.6;padding:7px 9px;background:rgba(88,166,255,.05);border:1px solid rgba(88,166,255,.15);border-radius:6px;margin-bottom:8px;}
+.atip strong{color:var(--accent);}
+.sl-row{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
 .sl-head{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
 .sl-head b{color:var(--text);font-family:'Space Grotesk',monospace;}
 input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent);cursor:pointer;}
-.num-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.num-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .num-row label{font-size:11px;color:var(--muted);flex:1;}
-.num-input{width:70px;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:'Space Grotesk',monospace;font-size:13px;font-weight:600;text-align:right;}
+.num-input{width:68px;padding:5px 7px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:'Space Grotesk',monospace;font-size:13px;font-weight:600;text-align:right;}
 .num-input:focus{outline:none;border-color:var(--accent);}
-.btn{width:100%;padding:9px 12px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
-.btn+.btn{margin-top:6px;}
+.btn{width:100%;padding:10px 12px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
+.btn+.btn{margin-top:5px;}
 .btn-blue{background:var(--accent);color:#0d1117;}.btn-blue:hover{filter:brightness(1.15);}
 .btn-green{background:var(--green);color:#0d1117;}.btn-green:hover{filter:brightness(1.1);}
 .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);}.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
 .btn-red{background:transparent;color:var(--orange);border:1px solid var(--orange);}
 .btn:disabled{background:var(--border)!important;color:var(--muted)!important;border-color:transparent!important;cursor:not-allowed;filter:none!important;}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:9px;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:8px;}
 .s-lbl{font-size:10px;color:var(--muted);margin-bottom:2px;}
-.s-val{font-family:'Space Grotesk',monospace;font-size:15px;font-weight:700;color:var(--accent);}
-.prog-wrap{display:none;margin-top:8px;}
-.prog-bar{background:var(--border);border-radius:4px;height:6px;overflow:hidden;}
+.s-val{font-family:'Space Grotesk',monospace;font-size:14px;font-weight:700;color:var(--accent);}
+.prog-wrap{display:none;margin-top:7px;}
+.prog-bar{background:var(--border);border-radius:4px;height:5px;overflow:hidden;}
 .prog-fill{height:100%;background:var(--green);width:0%;transition:width .05s;border-radius:4px;}
-.prog-txt{font-size:11px;color:var(--muted);margin-top:4px;text-align:center;}
+.prog-txt{font-size:10px;color:var(--muted);margin-top:3px;text-align:center;}
 .center{flex:1;background:#111;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 #resultCanvas{max-width:100%;max-height:100%;object-fit:contain;display:none;}
-.center-ph{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--muted);text-align:center;padding:20px;}
-.center-ph svg{opacity:.25;}.center-ph p{font-size:13px;}.center-ph small{font-size:11px;opacity:.6;}
+.center-ph{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted);text-align:center;padding:20px;}
+.center-ph svg{opacity:.2;}.center-ph p{font-size:13px;}.center-ph small{font-size:11px;opacity:.6;}
+@media(max-width:600px){.center{min-height:56vw;max-height:70vw;}#resultCanvas{width:100%;height:auto;max-height:70vw;}}
+[dir="rtl"] .tip-item,[dir="rtl"] .num-row{flex-direction:row-reverse;}
+[dir="rtl"] .hdr-right{margin-left:0;margin-right:auto;}
 #videoInput{display:none;}
 </style>
 </head>
 <body>
-<header>
-  <div class="logo">📸</div>
-  <h1>스트로보 궤적 캡쳐</h1>
-  <p>슬로모션 영상 → 다중섬광 사진 합성</p>
-</header>
-<div class="wrap">
-  <aside class="side">
 
-    <div class="sec">
-      <div class="sec-title">① 영상 업로드</div>
-      <div class="tip">
-        영상 <strong>앞부분 0.5초</strong>는 물체 없이 배경만 나오게 촬영하세요.<br>
-        그래야 배경과 물체를 정확히 구분할 수 있어요.
-      </div>
-      <input type="file" id="videoInput" accept="video/*">
-      <button class="btn btn-blue" onclick="document.getElementById('videoInput').click()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
-        영상 업로드
-      </button>
+<!-- ══════ 언어 선택 ══════ -->
+<div id="langScreen">
+  <div class="lang-hero">
+    <div class="hero-logo">📸</div>
+    <div class="hero-app">Strobo Motion Capture</div>
+    <div class="hero-slogan" id="heroSlogan">
+      스트로보 궤적을 얻기 위한 동영상을 먼저 찍고<br>
+      앱에서 동영상을 올려서 분석해 보세요.<br>
+      <em>멋진 스트로보 궤적 사진을 얻으세요!</em>
     </div>
-
-    <div class="sec">
-      <div class="sec-title">② 합성 설정</div>
-
-      <div class="num-row">
-        <label>합성 프레임 수 (물체 몇 개 찍을지)</label>
-        <input type="number" class="num-input" id="frameCount" value="10" min="2" max="100">
-      </div>
-
-      <div class="num-row">
-        <label>배경 구간 종료 (초) — 이 전까지 배경</label>
-        <input type="number" class="num-input" id="bgSec" value="0.5" min="0.05" max="5" step="0.05">
-      </div>
-
-      <div class="sl-row">
-        <div class="sl-head"><span>운동 시작 시간</span><b id="startVal">--</b>s</div>
-        <input type="range" id="startSlider" min="0" max="100" value="20" step="1" oninput="updateRange()">
-      </div>
-      <div class="sl-row">
-        <div class="sl-head"><span>운동 종료 시간</span><b id="endVal">--</b>s</div>
-        <input type="range" id="endSlider" min="0" max="100" value="100" step="1" oninput="updateRange()">
-      </div>
-
-      <div class="sl-row">
-        <div class="sl-head">
-          <span>감도 — 낮을수록 더 많이 감지</span><b id="threshVal">20</b>
-        </div>
-        <input type="range" id="threshSlider" min="3" max="80" value="20"
-               oninput="document.getElementById('threshVal').value=this.value">
-      </div>
-
-      <button class="btn btn-green" id="renderBtn" disabled>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        합성 시작
-      </button>
-      <div class="prog-wrap" id="progWrap">
-        <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
-        <div class="prog-txt" id="progTxt">처리 중...</div>
-      </div>
-    </div>
-
-    <div class="sec">
-      <div class="sec-title">③ 결과</div>
-      <button class="btn btn-ghost" id="saveBtn" disabled>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        이미지 저장
-      </button>
-      <button class="btn btn-red" id="resetBtn" disabled style="margin-top:6px">다시 합성</button>
-    </div>
-
-    <div class="sec">
-      <div class="sec-title">데이터</div>
-      <div class="stat-grid">
-        <div class="stat-card"><div class="s-lbl">영상 길이</div><div class="s-val" id="stDur">--</div></div>
-        <div class="stat-card"><div class="s-lbl">합성 프레임</div><div class="s-val" id="stFrames">--</div></div>
-        <div class="stat-card"><div class="s-lbl">해상도</div><div class="s-val" id="stRes">--</div></div>
-        <div class="stat-card"><div class="s-lbl">상태</div><div class="s-val" id="stStatus">대기</div></div>
-      </div>
-    </div>
-
-  </aside>
-
-  <div class="center">
-    <canvas id="resultCanvas"></canvas>
-    <div class="center-ph" id="centerPh">
-      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-        <rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/>
-      </svg>
-      <p>슬로모션 영상을 업로드하고 합성 시작을 누르세요</p>
-      <small>배경 차분으로 물체만 추출 → 완전 불투명하게 합성<br>물체 색상과 무관하게 작동합니다</small>
+    <div class="hero-sub" id="heroSub">Select your language / 언어를 선택하세요</div>
+  </div>
+  <div class="lang-body">
+    <div class="lang-label">🌐 Language / 언어</div>
+    <div class="lang-grid">
+      <button class="lang-btn" onclick="setLang('ko')"><span class="flag">🇰🇷</span><span class="lname">한국어</span><span class="lsub">Korean</span></button>
+      <button class="lang-btn" onclick="setLang('en')"><span class="flag">🇺🇸</span><span class="lname">English</span><span class="lsub">English</span></button>
+      <button class="lang-btn" onclick="setLang('es')"><span class="flag">🇪🇸</span><span class="lname">Español</span><span class="lsub">Spanish</span></button>
+      <button class="lang-btn" onclick="setLang('fr')"><span class="flag">🇫🇷</span><span class="lname">Français</span><span class="lsub">French</span></button>
+      <button class="lang-btn" onclick="setLang('de')"><span class="flag">🇩🇪</span><span class="lname">Deutsch</span><span class="lsub">German</span></button>
+      <button class="lang-btn" onclick="setLang('ja')"><span class="flag">🇯🇵</span><span class="lname">日本語</span><span class="lsub">Japanese</span></button>
+      <button class="lang-btn" onclick="setLang('zh')"><span class="flag">🇨🇳</span><span class="lname">中文</span><span class="lsub">Chinese</span></button>
+      <button class="lang-btn" onclick="setLang('ru')"><span class="flag">🇷🇺</span><span class="lname">Русский</span><span class="lsub">Russian</span></button>
+      <button class="lang-btn" onclick="setLang('ar')"><span class="flag">🇸🇦</span><span class="lname">العربية</span><span class="lsub">Arabic</span></button>
+      <button class="lang-btn" onclick="setLang('pt')"><span class="flag">🇧🇷</span><span class="lname">Português</span><span class="lsub">Portuguese</span></button>
+      <button class="lang-btn" onclick="setLang('hi')"><span class="flag">🇮🇳</span><span class="lname">हिन्दी</span><span class="lsub">Hindi</span></button>
+      <button class="lang-btn" onclick="setLang('id')"><span class="flag">🇮🇩</span><span class="lname">Indonesia</span><span class="lsub">Indonesian</span></button>
+      <button class="lang-btn" onclick="setLang('sv')"><span class="flag">🇸🇪</span><span class="lname">Svenska</span><span class="lsub">Swedish</span></button>
     </div>
   </div>
 </div>
 
+<!-- ══════ 팁 화면 ══════ -->
+<div id="tipScreen">
+  <div class="tip-header">
+    <button onclick="showLang()" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:6px 12px;cursor:pointer;font-family:inherit;font-size:12px;display:flex;align-items:center;gap:5px;transition:all .15s;flex-shrink:0;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      <span id="backBtn">🌐 언어 선택</span>
+    </button>
+    <div class="logo" style="margin-left:8px">📸</div>
+    <h1 id="tipH1" style="flex:1"></h1>
+  </div>
+  <div class="tip-body">
+    <div class="tip-badge" id="tipBadge"></div>
+    <h2 id="tipH2"></h2>
+    <p class="subtitle" id="tipSub"></p>
+    <div class="tip-list">
+      <div class="tip-item"><div class="tip-num n0">0</div><div><div class="tip-title" id="t0t"></div><div class="tip-desc" id="t0d"></div></div></div>
+      <div class="tip-item"><div class="tip-num n1">1</div><div><div class="tip-title" id="t1t"></div><div class="tip-desc" id="t1d"></div></div></div>
+      <div class="tip-item"><div class="tip-num n2">2</div><div><div class="tip-title" id="t2t"></div><div class="tip-desc" id="t2d"></div></div></div>
+      <div class="tip-item"><div class="tip-num n3">3</div><div><div class="tip-title" id="t3t"></div><div class="tip-desc" id="t3d"></div></div></div>
+      <div class="tip-item"><div class="tip-num n4">4</div><div><div class="tip-title" id="t4t"></div><div class="tip-desc" id="t4d"></div></div></div>
+    </div>
+  </div>
+  <div class="tip-footer"><button class="btn-start" id="tipStartBtn" onclick="startApp()"></button></div>
+</div>
+
+<!-- ══════ 메인 앱 ══════ -->
+<div id="appScreen">
+  <header>
+    <div class="logo">📸</div>
+    <h1 id="appTitle"></h1>
+    <div class="hdr-right">
+      <button class="hdr-btn" onclick="showTip()" id="btnShowTip"></button>
+      <button class="hdr-btn" onclick="showLang()">🌐</button>
+    </div>
+  </header>
+  <div class="wrap">
+    <aside class="side">
+      <div class="sec">
+        <div class="sec-title" id="secUpload"></div>
+        <div class="atip" id="uploadTip"></div>
+        <input type="file" id="videoInput" accept="video/*">
+        <button class="btn btn-blue" onclick="document.getElementById('videoInput').click()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
+          <span id="btnUpload"></span>
+        </button>
+      </div>
+      <div class="sec">
+        <div class="sec-title" id="secSettings"></div>
+        <!-- 입력 모드 토글 -->
+        <div style="display:flex;gap:5px;margin-bottom:10px;">
+          <button id="modeFC" onclick="setInputMode('fc')" style="flex:1;padding:7px 4px;border-radius:7px;border:1px solid var(--accent);background:rgba(88,166,255,.15);color:var(--accent);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;" id="modeFCBtn"><span id="lblModeFC"></span></button>
+          <button id="modeTI" onclick="setInputMode('ti')" style="flex:1;padding:7px 4px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;" id="modeTIBtn"><span id="lblModeTI"></span></button>
+        </div>
+        <!-- 프레임 수 입력 -->
+        <div class="num-row" id="rowFC"><label id="lblFC"></label><input type="number" class="num-input" id="frameCount" value="10" min="2" max="100"></div>
+        <!-- 시간 간격 입력 -->
+        <div id="rowTI" style="display:none">
+          <div class="num-row"><label id="lblIntv"></label><input type="number" class="num-input" id="intervalSec" value="0.2" min="0.05" max="5" step="0.05"></div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:8px;padding:6px 8px;background:rgba(88,166,255,.05);border:1px solid rgba(88,166,255,.12);border-radius:5px;" id="lblHint"></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px;"><span style="color:var(--muted)" id="lblEst"></span><b style="color:var(--accent);font-family:'Space Grotesk',monospace" id="estCount">--</b></div>
+        </div>
+        <div class="num-row"><label id="lblBG"></label><input type="number" class="num-input" id="bgSec" value="0.5" min="0.05" max="5" step="0.05"></div>
+        <div class="sl-row"><div class="sl-head"><span id="lblST"></span><b id="startVal">--</b>s</div><input type="range" id="startSlider" min="0" max="100" value="20" step="1" oninput="updateRange()"></div>
+        <div class="sl-row"><div class="sl-head"><span id="lblET"></span><b id="endVal">--</b>s</div><input type="range" id="endSlider" min="0" max="100" value="100" step="1" oninput="updateRange()"></div>
+        <div class="sl-row"><div class="sl-head"><span id="lblTH"></span><b id="threshVal">20</b></div><input type="range" id="threshSlider" min="3" max="80" value="20" oninput="document.getElementById('threshVal').value=this.value"></div>
+        <button class="btn btn-green" id="renderBtn" disabled>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span id="btnRender"></span>
+        </button>
+        <div class="prog-wrap" id="progWrap"><div class="prog-bar"><div class="prog-fill" id="progFill"></div></div><div class="prog-txt" id="progTxt"></div></div>
+      </div>
+      <div class="sec">
+        <div class="sec-title" id="secResult"></div>
+        <button class="btn btn-ghost" id="saveBtn" disabled><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span id="btnSave"></span></button>
+        <button class="btn btn-red" id="resetBtn" disabled style="margin-top:5px"><span id="btnReset"></span></button>
+      </div>
+      <div class="sec" id="supportSec" style="display:none">
+        <div class="sec-title" id="secSupport"></div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px;margin-bottom:8px;">
+          <div style="font-size:16px;margin-bottom:5px">🎉</div>
+          <div style="font-size:12px;font-weight:700;margin-bottom:5px;line-height:1.5" id="supportTitle"></div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.7" id="supportDesc"></div>
+        </div>
+        <a href="https://play.google.com/store" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:7px;padding:9px;border-radius:7px;background:#01875f;color:#fff;font-size:12px;font-weight:700;text-decoration:none;margin-bottom:5px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5v-17c0-.83 1.01-1.3 1.7-.8l15 8.5c.65.37.65 1.23 0 1.6L4.7 21.3c-.69.5-1.7.03-1.7-.8z"/></svg>
+          <span id="btnPlay"></span>
+        </a>
+        <div style="font-size:10px;color:var(--muted);text-align:center">Made with ❤️ by 효선오5</div>
+      </div>
+      <div class="sec">
+        <div class="sec-title" id="secData"></div>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="s-lbl" id="lblDur"></div><div class="s-val" id="stDur">--</div></div>
+          <div class="stat-card"><div class="s-lbl" id="lblFr"></div><div class="s-val" id="stFrames">--</div></div>
+          <div class="stat-card"><div class="s-lbl" id="lblRes"></div><div class="s-val" id="stRes">--</div></div>
+          <div class="stat-card"><div class="s-lbl" id="lblStat"></div><div class="s-val" id="stStatus"></div></div>
+        </div>
+      </div>
+    </aside>
+    <div class="center" id="centerArea">
+      <canvas id="resultCanvas"></canvas>
+      <div class="center-ph" id="centerPh">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
+        <p id="phText"></p><small id="phSmall"></small>
+      </div>
+    </div>
+  </div>
+</div>
 <video id="vidEl" style="display:none" playsinline></video>
 
 <script>
-const videoInput   = document.getElementById('videoInput');
-const vidEl        = document.getElementById('vidEl');
-const renderBtn    = document.getElementById('renderBtn');
-const saveBtn      = document.getElementById('saveBtn');
-const resetBtn     = document.getElementById('resetBtn');
-const resultCanvas = document.getElementById('resultCanvas');
-const rc           = resultCanvas.getContext('2d');
-const centerPh     = document.getElementById('centerPh');
-const progWrap     = document.getElementById('progWrap');
-const progFill     = document.getElementById('progFill');
-const progTxt      = document.getElementById('progTxt');
+const T = {
+  ko:{slogan:"스트로보 궤적을 얻기 위한 동영상을 먼저 찍고\n앱에서 동영상을 올려서 분석해 보세요.\n멋진 스트로보 궤적 사진을 얻으세요!",sloganEm:"멋진 스트로보 궤적 사진을 얻으세요!",
+    app:"스트로보 궤적 캡쳐",badge:"📹 촬영 전 필독",h2:"다중섬광 사진을 잘 찍으려면?",
+    sub:"영상을 올리기 전에 아래 촬영 팁을 읽어보세요.\n올바르게 찍어야 깔끔한 궤적 사진이 만들어집니다.",
+    start:"✅ 촬영 팁 확인 — 앱 시작",tipBtn:"📋 촬영 팁",
+    tips:[{t:"📌 카메라는 반드시 고정!",d:"카메라가 움직이면 배경도 달라져 물체를 구분할 수 없어요.<br><strong>카메라는 고정하고 물체만 움직여야 합니다.</strong><br>지나가는 사람 없어야 하고, 진자에서 공 놓을 때 <em>손이 멈춰야 해요.</em>"},
+      {t:"🪂 자유낙하 운동",d:"<em>슬로모션으로 촬영</em>하고 <strong>미리 촬영 버튼을 눌러 놓은 상태</strong>에서 낙하시키세요."},
+      {t:"🎳 등속 운동",d:"딱풀 굴리기, 친구가 등속으로 걷기 등을 촬영하세요."},
+      {t:"🏓 진자 운동",d:"실에 붙인 탁구공을 진자운동 시키고 촬영하세요.<br><strong>반복되기 전에 영상을 종료하세요.</strong>"},
+      {t:"🏸 포물선 운동",d:"탁구공을 비스듬히 던져 촬영하세요.<br><em>포물선이 높고 좁을수록 사진이 잘 찍힙니다.</em>"}],
+    up:"① 영상 업로드",utip:"영상 <strong>앞부분 0.5초</strong>는 물체 없이 배경만 나오게 촬영하세요.",ubtn:"영상 업로드",
+    set:"② 합성 설정",fc:"합성 프레임 수",bg:"배경 구간 종료(초)",st:"운동 시작 시간",et:"운동 종료 시간",th:"감도 — 낮을수록 더 많이 감지",
+    rbtn:"합성 시작",res:"③ 결과",save:"이미지 저장",savem:"새 탭에서 열기 (길게 눌러 저장)",reset:"다시 합성",
+    sup:"☕ 개발자 응원",stitle:"궤적 사진이 잘 나왔나요?",sdesc:"이 앱은 과학 수업을 더 재미있게 만들고 싶어서 혼자 만들었어요.<br>별점이나 응원 한 마디가 큰 힘이 됩니다! 🙏",play:"Google Play에서 별점 남기기",
+    data:"데이터",dur:"영상 길이",fr:"합성 프레임",res2:"해상도",stat:"상태",
+    sready:"준비",sproc:"처리중",sdone:"완료",
+    ph:"슬로모션 영상을 업로드하고 합성 시작을 누르세요",phs:"배경 차분으로 물체만 추출해 합성합니다",
+    pbg:"배경 추출 중...",pcomp:"합성 중...",pdone:"완료! ✓",
+    popup:"📥 이미지를 <strong style='color:#fff'>길게 눌러</strong> 저장하세요",popblock:"팝업이 차단되었습니다. 팝업을 허용해 주세요.",imode:"입력 방식",ifc:"프레임 수 지정",iti:"시간 간격 지정",iintlbl:"프레임 간격 (초)",ihint:"예: 0.2초마다 한 장 → 총 장수 자동 계산",iest:"예상 합성 수"},
 
-let duration = 0;
+  en:{slogan:"Record a video first to capture stroboscopic motion,\nthen upload it to the app and analyze it.\nGet stunning stroboscopic trajectory photos!",sloganEm:"Get stunning stroboscopic trajectory photos!",
+    app:"Strobo Motion Capture",badge:"📹 Read Before Shooting",h2:"How to get great stroboscopic photos?",
+    sub:"Read the tips below before uploading your video.\nProper shooting makes clean trajectory photos.",
+    start:"✅ Got it — Start App",tipBtn:"📋 Tips",
+    tips:[{t:"📌 Keep the camera fixed!",d:"If the camera moves, the background changes and objects can't be detected.<br><strong>Fix the camera — only the object should move.</strong><br>No people walking by. When releasing a pendulum, <em>keep your hand still.</em>"},
+      {t:"🪂 Free Fall",d:"Shoot in <em>slow-motion</em> and press record <strong>before</strong> dropping the object."},
+      {t:"🎳 Constant Velocity",d:"Roll a glue stick, have a friend walk steadily, etc."},
+      {t:"🏓 Pendulum Motion",d:"Tape a ping-pong ball to a string and swing it.<br><strong>Stop recording before it swings back.</strong>"},
+      {t:"🏸 Projectile Motion",d:"Toss a ping-pong ball at an angle.<br><em>A tall, narrow arc gives the best results.</em>"}],
+    up:"① Upload Video",utip:"The <strong>first 0.5 seconds</strong> should show only the background.",ubtn:"Upload Video",
+    set:"② Settings",fc:"Number of frames (positions)",bg:"Background duration (sec)",st:"Motion start",et:"Motion end",th:"Sensitivity — lower = more detected",
+    rbtn:"Start Compositing",res:"③ Result",save:"Save Image",savem:"Open in new tab (long-press to save)",reset:"Redo",
+    sup:"☕ Support Developer",stitle:"Did your photo turn out great?",sdesc:"I built this to make science class more fun.<br>A rating or kind word means a lot! 🙏",play:"Rate on Google Play",
+    data:"Data",dur:"Duration",fr:"Frames",res2:"Resolution",stat:"Status",
+    sready:"Ready",sproc:"Processing",sdone:"Done",
+    ph:"Upload a slow-motion video and press Start",phs:"Background subtraction extracts only the moving object",
+    pbg:"Extracting background...",pcomp:"Compositing...",pdone:"Done! ✓",
+    popup:"📥 <strong style='color:#fff'>Long-press</strong> the image to save",popblock:"Popup blocked. Please allow popups.",imode:"Input Mode",ifc:"Frame Count",iti:"Time Interval",iintlbl:"Interval (sec)",ihint:"e.g. 0.2 s/frame → count auto-calculated",iest:"Est. frames"},
 
-videoInput.addEventListener('change', e => {
-  const f = e.target.files[0]; if (!f) return;
-  vidEl.src = URL.createObjectURL(f);
-  vidEl.addEventListener('loadedmetadata', () => {
-    duration = vidEl.duration;
-    document.getElementById('stDur').textContent = duration.toFixed(2) + 's';
-    document.getElementById('stRes').textContent = vidEl.videoWidth + '×' + vidEl.videoHeight;
-    updateRange();
-    renderBtn.disabled = false;
-    document.getElementById('stStatus').textContent = '준비';
-  }, {once:true});
-  videoInput.value = '';
-});
+  es:{slogan:"Graba primero un vídeo para capturar la trayectoria,\nluego súbelo a la app y analízalo.\n¡Obtén fotos estroboscópicas espectaculares!",sloganEm:"¡Obtén fotos estroboscópicas espectaculares!",
+    app:"Captura Estroboscópica",badge:"📹 Leer antes de grabar",h2:"¿Cómo obtener buenas fotos estroboscópicas?",
+    sub:"Lee los consejos antes de subir el vídeo.\nGrabar correctamente da fotos de trayectoria limpias.",
+    start:"✅ Entendido — Iniciar",tipBtn:"📋 Consejos",
+    tips:[{t:"📌 ¡Mantén la cámara fija!",d:"Si la cámara se mueve no se detectan objetos.<br><strong>Fija la cámara; solo el objeto debe moverse.</strong><br>Sin personas pasando. Al soltar el péndulo, <em>mantén la mano quieta.</em>"},
+      {t:"🪂 Caída libre",d:"Graba en <em>cámara lenta</em> y pulsa grabar <strong>antes</strong> de soltar el objeto."},
+      {t:"🎳 Movimiento uniforme",d:"Rueda un lápiz pegamento, haz que un amigo camine a velocidad constante, etc."},
+      {t:"🏓 Movimiento pendular",d:"Cuelga una pelota con un hilo y hazla oscilar.<br><strong>Para la grabación antes de que vuelva.</strong>"},
+      {t:"🏸 Movimiento parabólico",d:"Lanza una pelota en ángulo.<br><em>Un arco alto y estrecho da los mejores resultados.</em>"}],
+    up:"① Subir vídeo",utip:"Los <strong>primeros 0,5 segundos</strong> deben mostrar solo el fondo.",ubtn:"Subir vídeo",
+    set:"② Ajustes",fc:"Nº de fotogramas",bg:"Duración fondo (s)",st:"Inicio movimiento",et:"Fin movimiento",th:"Sensibilidad — menor = más detección",
+    rbtn:"Iniciar composición",res:"③ Resultado",save:"Guardar imagen",savem:"Abrir en nueva pestaña (mantén pulsado)",reset:"Rehacer",
+    sup:"☕ Apoya al desarrollador",stitle:"¿Salió bien la foto?",sdesc:"Creé esta app para hacer la ciencia más divertida.<br>¡Una valoración me ayuda mucho! 🙏",play:"Valorar en Google Play",
+    data:"Datos",dur:"Duración",fr:"Fotogramas",res2:"Resolución",stat:"Estado",
+    sready:"Listo",sproc:"Procesando",sdone:"Hecho",
+    ph:"Sube un vídeo a cámara lenta y pulsa Iniciar",phs:"La sustracción de fondo extrae solo el objeto",
+    pbg:"Extrayendo fondo...",pcomp:"Componiendo...",pdone:"¡Hecho! ✓",
+    popup:"📥 <strong style='color:#fff'>Mantén pulsada</strong> la imagen para guardar",popblock:"Ventana emergente bloqueada. Por favor permítela.",imode:"Modo",ifc:"Nº fotogramas",iti:"Intervalo de tiempo",iintlbl:"Intervalo (s)",ihint:"Ej: cada 0,2 s → total calculado auto.",iest:"Fotogramas est."},
 
-function updateRange() {
-  if (!duration) return;
-  const s = +document.getElementById('startSlider').value / 100 * duration;
-  const e = +document.getElementById('endSlider').value   / 100 * duration;
-  document.getElementById('startVal').textContent = s.toFixed(2);
-  document.getElementById('endVal').textContent   = e.toFixed(2);
-}
+  fr:{slogan:"Filmez d'abord une vidéo pour capturer le mouvement,\npuis importez-la dans l'app pour l'analyser.\nObtenez de superbes photos stroboscopiques !",sloganEm:"Obtenez de superbes photos stroboscopiques !",
+    app:"Capture Stroboscopique",badge:"📹 Lire avant de filmer",h2:"Comment obtenir de bonnes photos stroboscopiques ?",
+    sub:"Lisez les conseils avant de télécharger votre vidéo.\nUn bon tournage donne des photos de trajectoire nettes.",
+    start:"✅ Compris — Démarrer",tipBtn:"📋 Conseils",
+    tips:[{t:"📌 Fixez l'appareil photo !",d:"Si la caméra bouge, le fond change et les objets ne sont pas détectés.<br><strong>Fixez la caméra — seul l'objet doit bouger.</strong><br>Pas de passants. Pour le pendule, <em>gardez la main immobile.</em>"},
+      {t:"🪂 Chute libre",d:"Filmez en <em>ralenti</em> et appuyez sur enregistrer <strong>avant</strong> de lâcher l'objet."},
+      {t:"🎳 Mouvement uniforme",d:"Faites rouler un bâton de colle, demandez à un ami de marcher à vitesse constante, etc."},
+      {t:"🏓 Mouvement pendulaire",d:"Fixez une balle de ping-pong à un fil et faites-la osciller.<br><strong>Arrêtez l'enregistrement avant qu'elle revienne.</strong>"},
+      {t:"🏸 Mouvement parabolique",d:"Lancez une balle de ping-pong en angle.<br><em>Un arc haut et étroit donne les meilleurs résultats.</em>"}],
+    up:"① Importer la vidéo",utip:"Les <strong>0,5 premières secondes</strong> ne doivent montrer que le fond.",ubtn:"Importer la vidéo",
+    set:"② Paramètres",fc:"Nombre d'images",bg:"Durée du fond (s)",st:"Début du mouvement",et:"Fin du mouvement",th:"Sensibilité — plus bas = plus détecté",
+    rbtn:"Lancer la composition",res:"③ Résultat",save:"Enregistrer l'image",savem:"Ouvrir dans un nouvel onglet (appui long pour sauvegarder)",reset:"Recommencer",
+    sup:"☕ Soutenir le développeur",stitle:"La photo est-elle réussie ?",sdesc:"J'ai créé cette app pour rendre les cours de sciences plus amusants.<br>Une note ou un mot d'encouragement m'aide beaucoup ! 🙏",play:"Noter sur Google Play",
+    data:"Données",dur:"Durée",fr:"Images",res2:"Résolution",stat:"Statut",
+    sready:"Prêt",sproc:"Traitement",sdone:"Terminé",
+    ph:"Importez une vidéo au ralenti et appuyez sur Lancer",phs:"La soustraction de fond extrait uniquement l'objet en mouvement",
+    pbg:"Extraction du fond...",pcomp:"Composition...",pdone:"Terminé ! ✓",
+    popup:"📥 <strong style='color:#fff'>Appuyez longuement</strong> sur l'image pour sauvegarder",popblock:"Fenêtre contextuelle bloquée. Veuillez l'autoriser.",imode:"Mode",ifc:"Nº images",iti:"Intervalle temps",iintlbl:"Intervalle (s)",ihint:"Ex: ttes les 0,2 s → total calculé auto",iest:"Images est."},
 
-function seekTo(t) {
-  return new Promise(res => {
-    vidEl.currentTime = t;
-    vidEl.addEventListener('seeked', res, {once:true});
+  de:{slogan:"Nimm zuerst ein Video auf, um die Bewegung festzuhalten,\nlade es dann in die App hoch und analysiere es.\nErhalte beeindruckende Stroboskop-Aufnahmen!",sloganEm:"Erhalte beeindruckende Stroboskop-Aufnahmen!",
+    app:"Stroboskop-Bewegungserfassung",badge:"📹 Vor der Aufnahme lesen",h2:"Wie bekommt man gute Stroboskopfotos?",
+    sub:"Lies die Tipps, bevor du das Video hochlädst.\nRichtige Aufnahme ergibt saubere Trajektorienfotos.",
+    start:"✅ Verstanden — App starten",tipBtn:"📋 Aufnahmetipps",
+    tips:[{t:"📌 Kamera festhalten!",d:"Wenn die Kamera sich bewegt, ändert sich der Hintergrund und Objekte werden nicht erkannt.<br><strong>Fixiere die Kamera — nur das Objekt soll sich bewegen.</strong><br>Keine vorbeigehenden Personen. Beim Pendel <em>die Hand nach dem Loslassen stillhalten.</em>"},
+      {t:"🪂 Freier Fall",d:"Nimm in <em>Zeitlupe</em> auf und drücke <strong>vor</strong> dem Loslassen auf Aufnahme."},
+      {t:"🎳 Gleichförmige Bewegung",d:"Einen Klebestift rollen lassen, einen Freund gleichmäßig gehen lassen usw."},
+      {t:"🏓 Pendelbewegung",d:"Klebe einen Tischtennisball an einen Faden und schwinge ihn wie ein Pendel.<br><strong>Stoppe die Aufnahme, bevor er zurückschwingt.</strong>"},
+      {t:"🏸 Wurfbewegung",d:"Wirf einen Tischtennisball schräg hoch.<br><em>Ein hoher, schmaler Bogen liefert die besten Ergebnisse.</em>"}],
+    up:"① Video hochladen",utip:"Die <strong>ersten 0,5 Sekunden</strong> sollten nur den Hintergrund zeigen.",ubtn:"Video hochladen",
+    set:"② Einstellungen",fc:"Anzahl der Frames",bg:"Hintergrunddauer (Sek.)",st:"Bewegungsstart",et:"Bewegungsende",th:"Empfindlichkeit — niedriger = mehr erkannt",
+    rbtn:"Komposition starten",res:"③ Ergebnis",save:"Bild speichern",savem:"In neuem Tab öffnen (Gedrückt halten zum Speichern)",reset:"Wiederholen",
+    sup:"☕ Entwickler unterstützen",stitle:"Ist das Foto gelungen?",sdesc:"Ich habe diese App entwickelt, um den Naturwissenschaftsunterricht spannender zu machen.<br>Eine Bewertung oder ein nettes Wort motiviert mich sehr! 🙏",play:"Bei Google Play bewerten",
+    data:"Daten",dur:"Videolänge",fr:"Frames",res2:"Auflösung",stat:"Status",
+    sready:"Bereit",sproc:"Verarbeitung",sdone:"Fertig",
+    ph:"Lade ein Zeitlupenvideo hoch und drücke Starten",phs:"Hintergrundsubtraktion extrahiert nur das bewegte Objekt",
+    pbg:"Hintergrund extrahieren...",pcomp:"Komponieren...",pdone:"Fertig! ✓",
+    popup:"📥 Bild <strong style='color:#fff'>gedrückt halten</strong> zum Speichern",popblock:"Popup blockiert. Bitte Popups erlauben.",imode:"Modus",ifc:"Anz. Frames",iti:"Zeitintervall",iintlbl:"Intervall (Sek.)",ihint:"z.B. alle 0,2 s → Anzahl autom. berechnet",iest:"Gesch. Frames"},
+
+  ja:{slogan:"まずストロボ軌跡用の動画を撮影し、\nアプリに動画をアップロードして分析してみましょう。\n素敵なストロボ軌跡写真をゲットしよう！",sloganEm:"素敵なストロボ軌跡写真をゲットしよう！",
+    app:"ストロボ軌跡キャプチャ",badge:"📹 撮影前に必読",h2:"多重露光写真をきれいに撮るには？",
+    sub:"動画をアップロードする前に撮影のヒントをお読みください。\n正しく撮影することで軌跡写真が美しく仕上がります。",
+    start:"✅ 確認しました — アプリ開始",tipBtn:"📋 撮影ヒント",
+    tips:[{t:"📌 カメラは必ず固定！",d:"カメラが動くと背景が変わり物体を検出できません。<br><strong>カメラを固定し、物体だけを動かしてください。</strong><br>人が通り過ぎないように。振り子の玉を放すときは<em>手を止めてください。</em>"},
+      {t:"🪂 自由落下運動",d:"<em>スローモーションで撮影</em>し、<strong>事前に録画ボタンを押した状態</strong>で落下させてください。"},
+      {t:"🎳 等速運動",d:"スティックのりを転がす、友達に等速で歩いてもらうなど。"},
+      {t:"🏓 振り子運動",d:"テープで固定した卓球ボールを振り子運動させて撮影。<br><strong>折り返す前に撮影を終了してください。</strong>"},
+      {t:"🏸 放物線運動",d:"卓球ボールを斜めに投げて撮影。<br><em>放物線が高く細いほどきれいに撮れます。</em>"}],
+    up:"① 動画アップロード",utip:"動画の<strong>最初の0.5秒</strong>は物体なしで背景のみを映してください。",ubtn:"動画をアップロード",
+    set:"② 合成設定",fc:"合成フレーム数",bg:"背景区間（秒）",st:"運動開始時刻",et:"運動終了時刻",th:"感度 — 低いほど多く検出",
+    rbtn:"合成開始",res:"③ 結果",save:"画像を保存",savem:"新しいタブで開く（長押しで保存）",reset:"やり直す",
+    sup:"☕ 開発者を応援",stitle:"軌跡写真はうまくできましたか？",sdesc:"理科の授業をもっと楽しくしたくてこのアプリを作りました。<br>レビューや応援の一言が励みになります！ 🙏",play:"Google Playでレビューする",
+    data:"データ",dur:"動画の長さ",fr:"合成フレーム",res2:"解像度",stat:"状態",
+    sready:"準備完了",sproc:"処理中",sdone:"完了",
+    ph:"スローモーション動画をアップロードして合成開始を押してください",phs:"背景差分で動いている物体のみを抽出して合成します",
+    pbg:"背景を抽出中...",pcomp:"合成中...",pdone:"完了！ ✓",
+    popup:"📥 画像を<strong style='color:#fff'>長押し</strong>して保存してください",popblock:"ポップアップがブロックされました。許可してください。",imode:"モード",ifc:"フレーム数",iti:"時間間隔",iintlbl:"間隔（秒）",ihint:"例: 0.2秒ごと → 合計を自動計算",iest:"推定フレーム"},
+
+  zh:{slogan:"先录制一段视频来捕捉频闪运动，\n然后上传到应用中进行分析。\n获取精彩的频闪轨迹照片！",sloganEm:"获取精彩的频闪轨迹照片！",
+    app:"频闪运动轨迹捕捉",badge:"📹 拍摄前必读",h2:"如何拍出好的频闪照片？",
+    sub:"上传视频前请阅读以下拍摄技巧。\n正确拍摄才能生成清晰的轨迹照片。",
+    start:"✅ 已了解 — 开始使用",tipBtn:"📋 拍摄技巧",
+    tips:[{t:"📌 相机必须固定！",d:"相机移动会导致背景变化，无法检测物体。<br><strong>固定相机，只让物体移动。</strong><br>避免有人经过，摆球放手时<em>手要保持静止。</em>"},
+      {t:"🪂 自由落体运动",d:"使用<em>慢动作模式拍摄</em>，<strong>提前按下录制按钮</strong>再释放物体。"},
+      {t:"🎳 匀速运动",d:"滚动固体胶棒、让朋友匀速行走等。"},
+      {t:"🏓 单摆运动",d:"用胶带将乒乓球固定在绳子上做摆动运动。<br><strong>在摆回来之前停止录制。</strong>"},
+      {t:"🏸 抛体运动",d:"斜向抛出乒乓球进行拍摄。<br><em>抛物线越高越窄，效果越好。</em>"}],
+    up:"① 上传视频",utip:"视频<strong>前0.5秒</strong>请只拍背景，不要有物体出现。",ubtn:"上传视频",
+    set:"② 合成设置",fc:"合成帧数",bg:"背景区间（秒）",st:"运动开始时间",et:"运动结束时间",th:"灵敏度 — 越低检测越多",
+    rbtn:"开始合成",res:"③ 结果",save:"保存图片",savem:"在新标签页中打开（长按保存）",reset:"重新合成",
+    sup:"☕ 支持开发者",stitle:"轨迹照片效果好吗？",sdesc:"我制作这个应用是为了让科学课更有趣。<br>如果觉得有用，请给个好评！ 🙏",play:"在Google Play上评分",
+    data:"数据",dur:"视频时长",fr:"合成帧数",res2:"分辨率",stat:"状态",
+    sready:"准备就绪",sproc:"处理中",sdone:"完成",
+    ph:"上传慢动作视频后点击开始合成",phs:"通过背景差分提取运动物体并合成",
+    pbg:"提取背景中...",pcomp:"合成中...",pdone:"完成！ ✓",
+    popup:"📥 请<strong style='color:#fff'>长按</strong>图片进行保存",popblock:"弹出窗口被拦截，请在浏览器中允许。",imode:"模式",ifc:"帧数",iti:"时间间隔",iintlbl:"间隔（秒）",ihint:"例：每0.2秒 → 自动计算总数",iest:"预计帧数"},
+
+  ru:{slogan:"Сначала запишите видео для захвата движения,\nзатем загрузите его в приложение и проанализируйте.\nПолучите впечатляющие стробоскопические фото!",sloganEm:"Получите впечатляющие стробоскопические фото!",
+    app:"Стробоскопический захват",badge:"📹 Читайте перед съёмкой",h2:"Как получить хорошие стробоскопические фото?",
+    sub:"Прочитайте советы перед загрузкой видео.\nПравильная съёмка даёт чёткие фото траектории.",
+    start:"✅ Понятно — Начать",tipBtn:"📋 Советы",
+    tips:[{t:"📌 Зафиксируйте камеру!",d:"Если камера движется, фон меняется и объект не распознаётся.<br><strong>Зафиксируйте камеру — двигаться должен только объект.</strong><br>Никаких посторонних в кадре. При маятнике <em>держите руку неподвижно.</em>"},
+      {t:"🪂 Свободное падение",d:"Снимайте в <em>замедленном режиме</em> и нажмите запись <strong>до</strong> падения объекта."},
+      {t:"🎳 Равномерное движение",d:"Катайте карандаш, попросите друга идти с постоянной скоростью и т.д."},
+      {t:"🏓 Маятник",d:"Прикрепите шарик к нитке и раскачайте его.<br><strong>Остановите запись до обратного хода.</strong>"},
+      {t:"🏸 Движение снаряда",d:"Бросьте мяч под углом.<br><em>Чем выше и уже дуга, тем лучше результат.</em>"}],
+    up:"① Загрузить видео",utip:"Первые <strong>0,5 секунды</strong> должны показывать только фон.",ubtn:"Загрузить видео",
+    set:"② Настройки",fc:"Количество кадров",bg:"Длительность фона (сек)",st:"Начало движения",et:"Конец движения",th:"Чувствительность — меньше = больше захвата",
+    rbtn:"Начать",res:"③ Результат",save:"Сохранить изображение",savem:"Открыть в новой вкладке (долгое нажатие)",reset:"Повторить",
+    sup:"☕ Поддержать разработчика",stitle:"Фото получилось хорошим?",sdesc:"Я создал это приложение, чтобы сделать урок интереснее.<br>Оценка или добрые слова очень помогают! 🙏",play:"Оценить в Google Play",
+    data:"Данные",dur:"Длина видео",fr:"Кадры",res2:"Разрешение",stat:"Статус",
+    sready:"Готово",sproc:"Обработка",sdone:"Готово",
+    ph:"Загрузите замедленное видео и нажмите «Начать»",phs:"Вычитание фона извлекает только движущийся объект",
+    pbg:"Извлечение фона...",pcomp:"Композиция...",pdone:"Готово! ✓",
+    popup:"📥 <strong style='color:#fff'>Удерживайте</strong> изображение для сохранения",popblock:"Всплывающее окно заблокировано. Разрешите всплывающие окна.",imode:"Режим",ifc:"Кол-во кадров",iti:"Интервал",iintlbl:"Интервал (сек)",ihint:"Напр.: 0,2 с/кадр → кол-во рассч. авт.",iest:"Ожид. кадры"},
+
+  ar:{slogan:"سجّل أولاً مقطع فيديو لالتقاط حركة الجسم،\nثم ارفعه في التطبيق وحلّله.\nاحصل على صور مسار رائعة!",sloganEm:"احصل على صور مسار رائعة!",
+    app:"التقاط مسار الحركة",badge:"📹 اقرأ قبل التصوير",h2:"كيف تحصل على صور ستروبوسكوبية جيدة؟",
+    sub:"اقرأ النصائح قبل رفع الفيديو.\nالتصوير الصحيح يعطي صوراً واضحة للمسار.",
+    start:"✅ فهمت — ابدأ التطبيق",tipBtn:"📋 نصائح",
+    tips:[{t:"📌 يجب تثبيت الكاميرا!",d:"إذا تحركت الكاميرا، تغيرت الخلفية ولا يمكن اكتشاف الجسم.<br><strong>ثبّت الكاميرا وحرّك الجسم فقط.</strong><br>لا يجب أن يمر أحد أمام الكاميرا. عند البندول، <em>أبقِ يدك ثابتة.</em>"},
+      {t:"🪂 السقوط الحر",d:"صوّر بـ<em>وضع الحركة البطيئة</em> واضغط تسجيل <strong>قبل</strong> إسقاط الجسم."},
+      {t:"🎳 الحركة المنتظمة",d:"دحرجة قلم لاصق، أو اطلب من صديق المشي بسرعة ثابتة."},
+      {t:"🏓 حركة البندول",d:"علّق كرة بخيط وحرّكها كبندول.<br><strong>أوقف التسجيل قبل أن تعود.</strong>"},
+      {t:"🏸 الحركة القذفية",d:"ارمِ كرة بزاوية.<br><em>كلما كان القوس أعلى وأضيق، كانت النتيجة أفضل.</em>"}],
+    up:"① رفع الفيديو",utip:"يجب أن تُظهر <strong>أول 0.5 ثانية</strong> الخلفية فقط بدون الجسم.",ubtn:"رفع الفيديو",
+    set:"② الإعدادات",fc:"عدد الإطارات",bg:"مدة الخلفية (ثانية)",st:"بداية الحركة",et:"نهاية الحركة",th:"الحساسية — كلما قلّت زاد الاكتشاف",
+    rbtn:"بدء الدمج",res:"③ النتيجة",save:"حفظ الصورة",savem:"فتح في تبويب جديد (اضغط مطولاً للحفظ)",reset:"إعادة الدمج",
+    sup:"☕ ادعم المطوّر",stitle:"هل ظهرت الصورة بشكل جيد؟",sdesc:"صنعت هذا التطبيق لجعل دروس العلوم أكثر متعة.<br>تقييمك يعني لي الكثير! 🙏",play:"تقييم على Google Play",
+    data:"البيانات",dur:"مدة الفيديو",fr:"الإطارات",res2:"الدقة",stat:"الحالة",
+    sready:"جاهز",sproc:"جارٍ المعالجة",sdone:"تم",
+    ph:"ارفع فيديو بالحركة البطيئة ثم اضغط ابدأ",phs:"يستخرج طرح الخلفية الجسم المتحرك فقط",
+    pbg:"استخراج الخلفية...",pcomp:"جارٍ الدمج...",pdone:"تم! ✓",
+    popup:"📥 <strong style='color:#fff'>اضغط مطولاً</strong> على الصورة للحفظ",popblock:"تم حجب النافذة المنبثقة. يرجى السماح بها.",imode:"الوضع",ifc:"عدد الإطارات",iti:"فاصل زمني",iintlbl:"الفاصل (ثانية)",ihint:"مثال: 0.2 ث/إطار → يُحسب الإجمالي تلقائياً",iest:"الإطارات المتوقعة"},
+
+  pt:{slogan:"Grave primeiro um vídeo para capturar o movimento,\ndepois envie para o app e analise.\nObtenha fotos estroboscópicas incríveis!",sloganEm:"Obtenha fotos estroboscópicas incríveis!",
+    app:"Captura Estroboscópica",badge:"📹 Leia antes de gravar",h2:"Como obter boas fotos estroboscópicas?",
+    sub:"Leia as dicas antes de enviar o vídeo.\nGravar corretamente resulta em fotos de trajetória nítidas.",
+    start:"✅ Entendido — Iniciar App",tipBtn:"📋 Dicas",
+    tips:[{t:"📌 Mantenha a câmera fixa!",d:"Se a câmera se mover, o fundo muda e os objetos não são detectados.<br><strong>Fixe a câmera — apenas o objeto deve se mover.</strong><br>Sem pessoas passando. No pêndulo, <em>mantenha a mão parada.</em>"},
+      {t:"🪂 Queda livre",d:"Grave em <em>câmera lenta</em> e pressione gravar <strong>antes</strong> de soltar o objeto."},
+      {t:"🎳 Movimento uniforme",d:"Role um bastão de cola, peça a um amigo para andar em velocidade constante, etc."},
+      {t:"🏓 Movimento pendular",d:"Prenda uma bolinha de ping-pong em um fio e balance-a como pêndulo.<br><strong>Pare a gravação antes que ela volte.</strong>"},
+      {t:"🏸 Movimento de projétil",d:"Jogue uma bolinha de ping-pong em ângulo.<br><em>Um arco alto e estreito dá os melhores resultados.</em>"}],
+    up:"① Enviar vídeo",utip:"Os <strong>primeiros 0,5 segundos</strong> devem mostrar apenas o fundo.",ubtn:"Enviar vídeo",
+    set:"② Configurações",fc:"Número de frames",bg:"Duração do fundo (s)",st:"Início do movimento",et:"Fim do movimento",th:"Sensibilidade — menor = mais detecção",
+    rbtn:"Iniciar composição",res:"③ Resultado",save:"Salvar imagem",savem:"Abrir em nova aba (pressão longa para salvar)",reset:"Refazer",
+    sup:"☕ Apoie o desenvolvedor",stitle:"A foto ficou boa?",sdesc:"Criei este app para tornar as aulas de ciências mais divertidas.<br>Uma avaliação ou palavra de incentivo ajuda muito! 🙏",play:"Avaliar no Google Play",
+    data:"Dados",dur:"Duração",fr:"Frames",res2:"Resolução",stat:"Status",
+    sready:"Pronto",sproc:"Processando",sdone:"Concluído",
+    ph:"Envie um vídeo em câmera lenta e pressione Iniciar",phs:"A subtração de fundo extrai apenas o objeto em movimento",
+    pbg:"Extraindo fundo...",pcomp:"Compondo...",pdone:"Concluído! ✓",
+    popup:"📥 <strong style='color:#fff'>Pressione longamente</strong> a imagem para salvar",popblock:"Pop-up bloqueado. Por favor, permita pop-ups.",imode:"Modo",ifc:"Nº frames",iti:"Intervalo tempo",iintlbl:"Intervalo (s)",ihint:"Ex: a cada 0,2 s → total calculado auto.",iest:"Frames est."},
+
+  hi:{slogan:"पहले स्ट्रोबो गति के लिए एक वीडियो रिकॉर्ड करें,\nफिर ऐप में वीडियो अपलोड करके विश्लेषण करें।\nबेहतरीन स्ट्रोबो ट्रैजेक्टरी फोटो पाएं!",sloganEm:"बेहतरीन स्ट्रोबो ट्रैजेक्टरी फोटो पाएं!",
+    app:"स्ट्रोबो गति कैप्चर",badge:"📹 शूट करने से पहले पढ़ें",h2:"अच्छी स्ट्रोबोस्कोपिक फ़ोटो कैसे लें?",
+    sub:"वीडियो अपलोड करने से पहले नीचे दिए गए सुझाव पढ़ें।\nसही शूटिंग से साफ़ ट्रैजेक्टरी फ़ोटो बनती है।",
+    start:"✅ समझ गया — ऐप शुरू करें",tipBtn:"📋 सुझाव",
+    tips:[{t:"📌 कैमरा स्थिर रखें!",d:"कैमरा हिलने पर पृष्ठभूमि बदल जाती है और वस्तु नहीं पहचानी जाती।<br><strong>कैमरा स्थिर रखें — केवल वस्तु को हिलना चाहिए।</strong><br>कोई व्यक्ति सामने न गुज़रे। पेंडुलम में <em>छोड़ने के बाद हाथ स्थिर रखें।</em>"},
+      {t:"🪂 मुक्त पतन",d:"<em>स्लो-मोशन</em> में रिकॉर्ड करें और वस्तु छोड़ने से <strong>पहले</strong> रिकॉर्ड बटन दबाएं।"},
+      {t:"🎳 समान गति",d:"ग्लू स्टिक रोलें, किसी मित्र को स्थिर गति से चलने दें, आदि।"},
+      {t:"🏓 पेंडुलम गति",d:"धागे से पिंग-पोंग बॉल बांधें और झुलाएं।<br><strong>वापस आने से पहले रिकॉर्डिंग बंद करें।</strong>"},
+      {t:"🏸 प्रक्षेप्य गति",d:"पिंग-पोंग बॉल को कोण पर फेंकें।<br><em>ऊंचा और संकरा चाप सबसे अच्छा परिणाम देता है।</em>"}],
+    up:"① वीडियो अपलोड करें",utip:"वीडियो के <strong>पहले 0.5 सेकंड</strong> में केवल पृष्ठभूमि दिखनी चाहिए।",ubtn:"वीडियो अपलोड करें",
+    set:"② सेटिंग्स",fc:"फ़्रेम की संख्या",bg:"पृष्ठभूमि अवधि (सेकंड)",st:"गति प्रारंभ समय",et:"गति समाप्ति समय",th:"संवेदनशीलता — कम = अधिक पहचान",
+    rbtn:"कम्पोज़िशन शुरू करें",res:"③ परिणाम",save:"छवि सहेजें",savem:"नए टैब में खोलें (सहेजने के लिए देर तक दबाएं)",reset:"दोबारा करें",
+    sup:"☕ डेवलपर का समर्थन करें",stitle:"क्या फ़ोटो अच्छी आई?",sdesc:"मैंने यह ऐप विज्ञान कक्षा को अधिक मज़ेदार बनाने के लिए बनाया।<br>रेटिंग या प्रोत्साहन के शब्द बहुत मदद करते हैं! 🙏",play:"Google Play पर रेट करें",
+    data:"डेटा",dur:"अवधि",fr:"फ़्रेम",res2:"रिज़ॉल्यूशन",stat:"स्थिति",
+    sready:"तैयार",sproc:"प्रक्रिया हो रही है",sdone:"पूर्ण",
+    ph:"स्लो-मोशन वीडियो अपलोड करें और शुरू करें दबाएं",phs:"पृष्ठभूमि घटाव केवल चलती वस्तु निकालता है",
+    pbg:"पृष्ठभूमि निकाली जा रही है...",pcomp:"कम्पोज़ हो रहा है...",pdone:"पूर्ण! ✓",
+    popup:"📥 <strong style='color:#fff'>देर तक दबाएं</strong> छवि को सहेजने के लिए",popblock:"पॉप-अप ब्लॉक हो गया। कृपया पॉप-अप की अनुमति दें।",imode:"मोड",ifc:"फ्रेम संख्या",iti:"समय अंतराल",iintlbl:"अंतराल (सेकंड)",ihint:"उदा: हर 0.2 सेकंड → कुल स्वचालित",iest:"अनु. फ्रेम"},
+
+  id:{slogan:"Rekam video terlebih dahulu untuk menangkap gerak stroboskopik,\nlalu upload ke app dan analisis.\nDapatkan foto trajektori stroboskopik yang menakjubkan!",sloganEm:"Dapatkan foto trajektori stroboskopik yang menakjubkan!",
+    app:"Tangkap Gerak Stroboskopik",badge:"📹 Baca Sebelum Merekam",h2:"Cara mendapatkan foto stroboskopik yang baik?",
+    sub:"Baca tips di bawah sebelum mengunggah video.\nPelankan pengambilan gambar yang benar menghasilkan foto trajektori yang bersih.",
+    start:"✅ Mengerti — Mulai App",tipBtn:"📋 Tips",
+    tips:[{t:"📌 Kamera harus diam!",d:"Jika kamera bergerak, latar belakang berubah dan objek tidak terdeteksi.<br><strong>Kamera harus diam — hanya objek yang boleh bergerak.</strong><br>Tidak ada orang yang lewat. Saat melepas pendulum, <em>tahan tangan agar diam.</em>"},
+      {t:"🪂 Gerak Jatuh Bebas",d:"Rekam dalam <em>mode slow motion</em> dan tekan rekam <strong>sebelum</strong> melepaskan objek."},
+      {t:"🎳 Gerak Beraturan",d:"Gulingkan batang lem, minta teman berjalan dengan kecepatan konstan, dsb."},
+      {t:"🏓 Gerak Pendulum",d:"Tempelkan bola ping-pong ke tali dan ayunkan.<br><strong>Hentikan rekaman sebelum ayunan kembali.</strong>"},
+      {t:"🏸 Gerak Parabola",d:"Lempar bola ping-pong dengan sudut tertentu.<br><em>Lengkungan tinggi dan sempit memberikan hasil terbaik.</em>"}],
+    up:"① Unggah Video",utip:"<strong>0,5 detik pertama</strong> hanya menampilkan latar belakang tanpa objek.",ubtn:"Unggah Video",
+    set:"② Pengaturan",fc:"Jumlah frame",bg:"Durasi latar (detik)",st:"Waktu mulai gerak",et:"Waktu selesai gerak",th:"Sensitivitas — lebih rendah = lebih banyak terdeteksi",
+    rbtn:"Mulai Komposisi",res:"③ Hasil",save:"Simpan Gambar",savem:"Buka di tab baru (tekan lama untuk menyimpan)",reset:"Ulangi",
+    sup:"☕ Dukung Pengembang",stitle:"Apakah fotonya bagus?",sdesc:"Saya membuat app ini untuk membuat pelajaran sains lebih menyenangkan.<br>Rating atau kata semangat sangat berarti! 🙏",play:"Beri Rating di Google Play",
+    data:"Data",dur:"Durasi",fr:"Frame",res2:"Resolusi",stat:"Status",
+    sready:"Siap",sproc:"Memproses",sdone:"Selesai",
+    ph:"Unggah video slow motion dan tekan Mulai",phs:"Pengurangan latar belakang mengekstrak hanya objek bergerak",
+    pbg:"Mengekstrak latar...",pcomp:"Mengomposisi...",pdone:"Selesai! ✓",
+    popup:"📥 <strong style='color:#fff'>Tekan lama</strong> gambar untuk menyimpan",popblock:"Popup diblokir. Harap izinkan popup.",imode:"Mode",ifc:"Jml Frame",iti:"Interval Waktu",iintlbl:"Interval (dtk)",ihint:"Misal: tiap 0,2 dtk → jumlah otomatis",iest:"Perkiraan frame"},
+
+  sv:{slogan:"Spela in en video först för att fånga rörelsen,\nladda sedan upp den i appen och analysera.\nFå fantastiska stroboskopiska bilder!",sloganEm:"Få fantastiska stroboskopiska bilder!",
+    app:"Stroboskopisk Rörelsespårning",badge:"📹 Läs innan du filmar",h2:"Hur tar du bra stroboskopiska foton?",
+    sub:"Läs tipsen nedan innan du laddar upp videon.\nKorrekt filmning ger tydliga trajektoriebilder.",
+    start:"✅ Förstått — Starta appen",tipBtn:"📋 Filmtips",
+    tips:[{t:"📌 Håll kameran stilla!",d:"Om kameran rör sig ändras bakgrunden och objektet kan inte detekteras.<br><strong>Fixera kameran — bara objektet ska röra sig.</strong><br>Inga förbipasserande. Vid pendeln, <em>håll handen stilla när du släpper.</em>"},
+      {t:"🪂 Fritt fall",d:"Filma i <em>slow motion</em> och tryck på spela in <strong>innan</strong> du släpper objektet."},
+      {t:"🎳 Jämn rörelse",d:"Rulla en limstift, låt en vän gå i jämn takt osv."},
+      {t:"🏓 Pendelrörelse",d:"Tejpa en pingisboll på ett snöre och svinga den som en pendel.<br><strong>Stoppa inspelningen innan den svänger tillbaka.</strong>"},
+      {t:"🏸 Kaströrelse",d:"Kasta en pingisboll i en vinkel.<br><em>En hög, smal kurva ger bäst resultat.</em>"}],
+    up:"① Ladda upp video",utip:"Se till att de <strong>första 0,5 sekunderna</strong> bara visar bakgrunden.",ubtn:"Ladda upp video",
+    set:"② Inställningar",fc:"Antal bildrutor",bg:"Bakgrundsduration (sek)",st:"Rörelsens start",et:"Rörelsens slut",th:"Känslighet — lägre = mer detekteras",
+    rbtn:"Starta sammanslagning",res:"③ Resultat",save:"Spara bild",savem:"Öppna i ny flik (håll intryckt för att spara)",reset:"Gör om",
+    sup:"☕ Stöd utvecklaren",stitle:"Blev spårningsbilden bra?",sdesc:"Jag skapade den här appen för att göra NO-lektionerna roligare.<br>Ett betyg eller uppmuntrande ord betyder mycket! 🙏",play:"Betygsätt på Google Play",
+    data:"Data",dur:"Videolängd",fr:"Bildrutor",res2:"Upplösning",stat:"Status",
+    sready:"Redo",sproc:"Bearbetar",sdone:"Klar",
+    ph:"Ladda upp en slow motion-video och tryck på Starta",phs:"Bakgrundssubtraktion extraherar bara det rörliga objektet",
+    pbg:"Extraherar bakgrund...",pcomp:"Sätter ihop...",pdone:"Klar! ✓",
+    popup:"📥 <strong style='color:#fff'>Håll nere</strong> bilden för att spara",popblock:"Popup blockerades. Tillåt popups i din webbläsare.",imode:"Läge",ifc:"Ant. bildrutor",iti:"Tidsintervall",iintlbl:"Intervall (sek)",ihint:"T.ex. var 0,2 s → antal beräknas auto.",iest:"Beräknade rutor"}
+};
+
+const RTL=['ar'];
+const isMobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+let lang='ko';
+
+function setLang(l){
+  lang=l;const t=T[l];
+  const isRTL=RTL.includes(l);
+  document.documentElement.lang=l;
+  document.documentElement.dir=isRTL?'rtl':'ltr';
+
+  // 슬로건 업데이트
+  document.getElementById('heroSlogan').innerHTML=t.slogan.replace(t.sloganEm,'<em>'+t.sloganEm+'</em>').replace(/\n/g,'<br>');
+
+  // 팁 화면
+  document.getElementById('tipH1').textContent=t.app;
+  document.getElementById('tipBadge').textContent=t.badge;
+  document.getElementById('tipH2').textContent=t.h2;
+  document.getElementById('tipSub').textContent=t.sub;
+  document.getElementById('tipStartBtn').textContent=t.start;
+  t.tips.forEach((tip,i)=>{
+    document.getElementById('t'+i+'t').textContent=tip.t;
+    document.getElementById('t'+i+'d').innerHTML=tip.d;
   });
+
+  // 메인 앱
+  document.getElementById('appTitle').textContent=t.app;
+  document.getElementById('btnShowTip').textContent=t.tipBtn;
+  document.getElementById('secUpload').textContent=t.up;
+  document.getElementById('uploadTip').innerHTML=t.utip;
+  document.getElementById('btnUpload').textContent=t.ubtn;
+  document.getElementById('secSettings').textContent=t.set;
+  document.getElementById('lblFC').textContent=t.fc;
+  document.getElementById('lblBG').textContent=t.bg;
+  document.getElementById('lblST').textContent=t.st;
+  document.getElementById('lblET').textContent=t.et;
+  document.getElementById('lblTH').textContent=t.th;
+  document.getElementById('btnRender').textContent=t.rbtn;
+  document.getElementById('secResult').textContent=t.res;
+  document.getElementById('btnSave').textContent=isMobile?t.savem:t.save;
+  document.getElementById('btnReset').textContent=t.reset;
+  document.getElementById('secSupport').textContent=t.sup;
+  document.getElementById('supportTitle').textContent=t.stitle;
+  document.getElementById('supportDesc').innerHTML=t.sdesc;
+  document.getElementById('btnPlay').textContent=t.play;
+  document.getElementById('secData').textContent=t.data;
+  document.getElementById('lblDur').textContent=t.dur;
+  document.getElementById('lblFr').textContent=t.fr;
+  document.getElementById('lblRes').textContent=t.res2;
+  document.getElementById('lblStat').textContent=t.stat;
+  document.getElementById('stStatus').textContent=t.sready;
+  // 모드 버튼 레이블
+  if(document.getElementById('lblModeFC')) document.getElementById('lblModeFC').textContent=t.ifc||'Frame Count';
+  if(document.getElementById('lblModeTI')) document.getElementById('lblModeTI').textContent=t.iti||'Time Interval';
+  if(document.getElementById('lblIntv'))   document.getElementById('lblIntv').textContent=t.iintlbl||'Interval (sec)';
+  if(document.getElementById('lblHint'))   document.getElementById('lblHint').textContent=t.ihint||'';
+  if(document.getElementById('lblEst'))    document.getElementById('lblEst').textContent=t.iest||'Est. frames';
+  const backLabels={'ko':'🌐 언어 선택','en':'🌐 Language','es':'🌐 Idioma','fr':'🌐 Langue','de':'🌐 Sprache','ja':'🌐 言語選択','zh':'🌐 语言选择','ru':'🌐 Язык','ar':'🌐 اللغة','pt':'🌐 Idioma','hi':'🌐 भाषा','id':'🌐 Bahasa','sv':'🌐 Språk'};
+  document.getElementById('backBtn').textContent=backLabels[l]||'🌐 Language';
+  document.getElementById('phText').textContent=t.ph;
+  document.getElementById('phSmall').textContent=t.phs;
+
+  document.getElementById('langScreen').style.display='none';
+  document.getElementById('tipScreen').style.display='flex';
+  document.getElementById('tipScreen').scrollTop=0;
 }
 
-renderBtn.addEventListener('click', async () => {
-  if (!duration) return;
+function startApp(){
+  document.getElementById('tipScreen').style.display='none';
+  document.getElementById('appScreen').classList.add('active');
+}
+function showTip(){
+  document.getElementById('appScreen').classList.remove('active');
+  document.getElementById('tipScreen').style.display='flex';
+  document.getElementById('tipScreen').scrollTop=0;
+}
+function showLang(){
+  document.getElementById('appScreen').classList.remove('active');
+  document.getElementById('tipScreen').style.display='none';
+  document.getElementById('langScreen').style.display='flex';
+}
 
-  const frameCount = Math.max(2, Math.min(100, +document.getElementById('frameCount').value));
-  const bgSec      = +document.getElementById('bgSec').value;
-  const startT     = +document.getElementById('startSlider').value / 100 * duration;
-  const endT       = +document.getElementById('endSlider').value   / 100 * duration;
-  const thresh     = +document.getElementById('threshSlider').value;
+// ── 앱 로직 ──
+const videoInput=document.getElementById('videoInput');
+const vidEl=document.getElementById('vidEl');
+const renderBtn=document.getElementById('renderBtn');
+const saveBtn=document.getElementById('saveBtn');
+const resetBtn=document.getElementById('resetBtn');
+const resultCanvas=document.getElementById('resultCanvas');
+const rc=resultCanvas.getContext('2d');
+const centerPh=document.getElementById('centerPh');
+const progWrap=document.getElementById('progWrap');
+const progFill=document.getElementById('progFill');
+const progTxt=document.getElementById('progTxt');
+const centerArea=document.getElementById('centerArea');
+let duration=0,vidW=0,vidH=0;
 
-  renderBtn.disabled = true;
-  progWrap.style.display = 'block';
-  document.getElementById('stStatus').textContent = '처리중';
-  document.getElementById('stFrames').textContent = frameCount;
-
-  const vw = vidEl.videoWidth, vh = vidEl.videoHeight;
-
-  const bgCanvas  = document.createElement('canvas'); bgCanvas.width=vw; bgCanvas.height=vh;
-  const bgc       = bgCanvas.getContext('2d');
-  const tmpCanvas = document.createElement('canvas'); tmpCanvas.width=vw; tmpCanvas.height=vh;
-  const tc        = tmpCanvas.getContext('2d');
-  const maskCanvas= document.createElement('canvas'); maskCanvas.width=vw; maskCanvas.height=vh;
-  const mc        = maskCanvas.getContext('2d');
-
-  // ── 1단계: 배경 추출 (bgSec 구간 5프레임 평균) ──
-  progTxt.textContent = '배경 추출 중...';
-  const bgSamples = 5;
-  const bgAcc = new Float32Array(vw * vh * 4);
-  for (let i = 0; i < bgSamples; i++) {
-    await seekTo(bgSec * (i + 1) / (bgSamples + 1));
-    bgc.drawImage(vidEl, 0, 0);
-    const d = bgc.getImageData(0, 0, vw, vh).data;
-    for (let j = 0; j < d.length; j++) bgAcc[j] += d[j];
-  }
-  const bgData = new Uint8ClampedArray(vw * vh * 4);
-  for (let j = 0; j < bgData.length; j++) bgData[j] = bgAcc[j] / bgSamples;
-
-  // ── 2단계: 결과 캔버스에 배경 깔기 ──
-  resultCanvas.width = vw; resultCanvas.height = vh;
-  resultCanvas.style.display = 'block';
-  centerPh.style.display = 'none';
-  rc.globalAlpha = 1;
-  rc.globalCompositeOperation = 'source-over';
-  bgc.putImageData(new ImageData(bgData, vw, vh), 0, 0);
-  rc.drawImage(bgCanvas, 0, 0);
-
-  // ── 3단계: 각 프레임에서 배경 차분 → 물체만 완전 불투명으로 합성 ──
-  const times = [];
-  for (let i = 0; i < frameCount; i++) {
-    times.push(startT + (endT - startT) * i / (frameCount - 1));
-  }
-
-  for (let i = 0; i < times.length; i++) {
-    await seekTo(times[i]);
-    tc.drawImage(vidEl, 0, 0);
-    const curr = tc.getImageData(0, 0, vw, vh).data;
-
-    // 배경 차분: 물체 픽셀 = 배경과 차이가 thresh 이상인 픽셀
-    // 알파값 = 255 (완전 불투명) → 흐림 없음
-    const maskPx = new Uint8ClampedArray(vw * vh * 4);
-    for (let px = 0; px < vw * vh; px++) {
-      const j = px * 4;
-      const dr = Math.abs(curr[j]   - bgData[j]);
-      const dg = Math.abs(curr[j+1] - bgData[j+1]);
-      const db = Math.abs(curr[j+2] - bgData[j+2]);
-
-      if ((dr + dg + db) / 3 > thresh) {
-        // 물체 픽셀: 원래 색, 완전 불투명
-        maskPx[j]   = curr[j];
-        maskPx[j+1] = curr[j+1];
-        maskPx[j+2] = curr[j+2];
-        maskPx[j+3] = 255; // ← 핵심: 무조건 불투명
-      }
-      // 배경 픽셀: alpha=0 (기본값) → 투명, 건드리지 않음
-    }
-
-    mc.putImageData(new ImageData(maskPx, vw, vh), 0, 0);
-    rc.globalAlpha = 1;
-    rc.globalCompositeOperation = 'source-over';
-    rc.drawImage(maskCanvas, 0, 0);
-
-    const pct = Math.round(((i + 1) / times.length) * 100);
-    progFill.style.width = pct + '%';
-    progTxt.textContent  = `합성 중... ${pct}% (${i+1}/${times.length})`;
-    if (i % 2 === 0) await new Promise(r => setTimeout(r, 0));
-  }
-
-  progFill.style.width = '100%';
-  progTxt.textContent  = '완료! ✓';
-  setTimeout(() => { progWrap.style.display = 'none'; }, 1500);
-  renderBtn.disabled = false;
-  saveBtn.disabled   = false;
-  resetBtn.disabled  = false;
-  document.getElementById('stStatus').textContent = '완료';
+videoInput.addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  vidEl.src=URL.createObjectURL(f);
+  vidEl.addEventListener('loadedmetadata',()=>{
+    duration=vidEl.duration;vidW=vidEl.videoWidth;vidH=vidEl.videoHeight;
+    document.getElementById('stDur').textContent=duration.toFixed(2)+'s';
+    document.getElementById('stRes').textContent=vidW+'×'+vidH;
+    updateRange();renderBtn.disabled=false;
+    document.getElementById('stStatus').textContent=T[lang].sready;
+    adjustLayout();
+  },{once:true});
+  videoInput.value='';
 });
 
-saveBtn.addEventListener('click', () => {
-  resultCanvas.toBlob(blob => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = '스트로보_' + new Date().toISOString().slice(0,19).replace(/:/g,'-') + '.png';
-    a.click();
-  }, 'image/png');
+function adjustLayout(){
+  if(!isMobile)return;
+  const wrap=document.querySelector('.wrap');
+  if(vidW>vidH){wrap.style.flexDirection='column';centerArea.style.minHeight=Math.round(window.innerWidth*vidH/vidW)+'px';centerArea.style.maxHeight='none';}
+  else{wrap.style.flexDirection='row';centerArea.style.minHeight='';centerArea.style.maxHeight='';}
+}
+function updateRange(){
+  if(!duration)return;
+  const s=+document.getElementById('startSlider').value/100*duration;
+  const e=+document.getElementById('endSlider').value/100*duration;
+  document.getElementById('startVal').textContent=s.toFixed(2);
+  document.getElementById('endVal').textContent=e.toFixed(2);
+}
+function seekTo(t){return new Promise(res=>{vidEl.currentTime=t;vidEl.addEventListener('seeked',res,{once:true});});}
+
+let inputMode='fc'; // 'fc' or 'ti'
+
+function setInputMode(mode){
+  inputMode=mode;
+  const fcBtn=document.getElementById('modeFC');
+  const tiBtn=document.getElementById('modeTI');
+  const rowFC=document.getElementById('rowFC');
+  const rowTI=document.getElementById('rowTI');
+  if(mode==='fc'){
+    fcBtn.style.borderColor='var(--accent)';fcBtn.style.background='rgba(88,166,255,.15)';fcBtn.style.color='var(--accent)';
+    tiBtn.style.borderColor='var(--border)';tiBtn.style.background='transparent';tiBtn.style.color='var(--muted)';
+    rowFC.style.display='flex';rowTI.style.display='none';
+  } else {
+    tiBtn.style.borderColor='var(--accent)';tiBtn.style.background='rgba(88,166,255,.15)';tiBtn.style.color='var(--accent)';
+    fcBtn.style.borderColor='var(--border)';fcBtn.style.background='transparent';fcBtn.style.color='var(--muted)';
+    rowFC.style.display='none';rowTI.style.display='block';
+    updateEstimate();
+  }
+}
+
+function updateEstimate(){
+  if(!duration)return;
+  const iv=+document.getElementById('intervalSec').value||0.2;
+  const s=+document.getElementById('startSlider').value/100*duration;
+  const e=+document.getElementById('endSlider').value/100*duration;
+  const n=Math.max(2,Math.round((e-s)/iv)+1);
+  document.getElementById('estCount').textContent=n;
+}
+
+document.getElementById('intervalSec').addEventListener('input',updateEstimate);
+document.getElementById('startSlider').addEventListener('input',updateEstimate);
+document.getElementById('endSlider').addEventListener('input',updateEstimate);
+
+renderBtn.addEventListener('click',async()=>{
+  if(!duration)return;
+  const t=T[lang];
+  let fc;
+  if(inputMode==='ti'){
+    const iv=+document.getElementById('intervalSec').value||0.2;
+    const span=e-s;
+    fc=Math.max(2,Math.min(200,Math.round(span/iv)+1));
+  } else {
+    fc=Math.max(2,Math.min(100,+document.getElementById('frameCount').value));
+  }
+  const bg=+document.getElementById('bgSec').value;
+  const s=+document.getElementById('startSlider').value/100*duration;
+  const e=+document.getElementById('endSlider').value/100*duration;
+  const th=+document.getElementById('threshSlider').value;
+  renderBtn.disabled=true;progWrap.style.display='block';
+  document.getElementById('stStatus').textContent=t.sproc;
+  document.getElementById('stFrames').textContent=fc;
+  const vw=vidEl.videoWidth,vh=vidEl.videoHeight;
+  const bgC=document.createElement('canvas');bgC.width=vw;bgC.height=vh;const bgc=bgC.getContext('2d');
+  const tmpC=document.createElement('canvas');tmpC.width=vw;tmpC.height=vh;const tc=tmpC.getContext('2d');
+  const mC=document.createElement('canvas');mC.width=vw;mC.height=vh;const mc=mC.getContext('2d');
+  progTxt.textContent=t.pbg;
+  const n=5;const acc=new Float32Array(vw*vh*4);
+  for(let i=0;i<n;i++){await seekTo(bg*(i+1)/(n+1));bgc.drawImage(vidEl,0,0);const d=bgc.getImageData(0,0,vw,vh).data;for(let j=0;j<d.length;j++)acc[j]+=d[j];}
+  const bgD=new Uint8ClampedArray(vw*vh*4);for(let j=0;j<bgD.length;j++)bgD[j]=acc[j]/n;
+  resultCanvas.width=vw;resultCanvas.height=vh;resultCanvas.style.display='block';centerPh.style.display='none';
+  rc.globalAlpha=1;rc.globalCompositeOperation='source-over';
+  bgc.putImageData(new ImageData(bgD,vw,vh),0,0);rc.drawImage(bgC,0,0);
+  if(isMobile&&vw>vh)centerArea.style.minHeight=Math.round(window.innerWidth*vh/vw)+'px';
+  const times=[];for(let i=0;i<fc;i++)times.push(s+(e-s)*i/(fc-1));
+  for(let i=0;i<times.length;i++){
+    await seekTo(times[i]);tc.drawImage(vidEl,0,0);
+    const curr=tc.getImageData(0,0,vw,vh).data;
+    const mp=new Uint8ClampedArray(vw*vh*4);
+    for(let px=0;px<vw*vh;px++){const j=px*4;const dr=Math.abs(curr[j]-bgD[j]),dg=Math.abs(curr[j+1]-bgD[j+1]),db=Math.abs(curr[j+2]-bgD[j+2]);if((dr+dg+db)/3>th){mp[j]=curr[j];mp[j+1]=curr[j+1];mp[j+2]=curr[j+2];mp[j+3]=255;}}
+    mc.putImageData(new ImageData(mp,vw,vh),0,0);rc.globalAlpha=1;rc.globalCompositeOperation='source-over';rc.drawImage(mC,0,0);
+    const pct=Math.round(((i+1)/times.length)*100);
+    progFill.style.width=pct+'%';progTxt.textContent=t.pcomp+' '+pct+'% ('+(i+1)+'/'+times.length+')';
+    if(i%2===0)await new Promise(r=>setTimeout(r,0));
+  }
+  progFill.style.width='100%';progTxt.textContent=t.pdone;
+  setTimeout(()=>{progWrap.style.display='none';},1500);
+  renderBtn.disabled=false;saveBtn.disabled=false;resetBtn.disabled=false;
+  document.getElementById('stStatus').textContent=t.sdone;
+  document.getElementById('supportSec').style.display='block';
 });
 
-resetBtn.addEventListener('click', () => {
-  rc.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
-  resultCanvas.style.display = 'none';
-  centerPh.style.display = 'flex';
-  saveBtn.disabled = true; resetBtn.disabled = true;
-  document.getElementById('stFrames').textContent = '--';
-  document.getElementById('stStatus').textContent = '준비';
+saveBtn.addEventListener('click',()=>{
+  const t=T[lang];
+  if(isMobile){
+    const url=resultCanvas.toDataURL('image/png');
+    const w=window.open();
+    if(w){w.document.write(`<html><head><meta name="viewport" content="width=device-width"><title>Strobo</title><style>body{margin:0;background:#000;display:flex;flex-direction:column;align-items:center;padding:12px;gap:10px;}img{max-width:100%;border-radius:8px;}p{color:#aaa;font-size:13px;font-family:sans-serif;text-align:center;}</style></head><body><p>${t.popup}</p><img src="${url}"></body></html>`);}
+    else alert(t.popblock);
+  }else{resultCanvas.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='strobo_'+Date.now()+'.png';a.click();},'image/png');}
 });
+
+resetBtn.addEventListener('click',()=>{
+  rc.clearRect(0,0,resultCanvas.width,resultCanvas.height);
+  resultCanvas.style.display='none';centerPh.style.display='flex';
+  saveBtn.disabled=true;resetBtn.disabled=true;
+  document.getElementById('stFrames').textContent='--';
+  document.getElementById('stStatus').textContent=T[lang].sready;
+  document.getElementById('supportSec').style.display='none';
+});
+window.addEventListener('resize',adjustLayout);
 </script>
 </body>
 </html>
