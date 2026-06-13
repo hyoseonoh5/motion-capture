@@ -3,641 +3,350 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>물체 궤적 캡쳐</title>
+<title>스트로보 궤적 캡쳐</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
-
 :root {
-  --bg: #0d1117; --panel: #161b22; --card: #1c2333;
-  --border: #30363d; --accent: #58a6ff; --green: #3fb950;
-  --orange: #f78166; --yellow: #e3b341; --text: #e6edf3; --muted: #8b949e;
+  --bg:#0d1117; --panel:#161b22; --card:#1c2333;
+  --border:#30363d; --accent:#58a6ff; --green:#3fb950;
+  --orange:#f78166; --yellow:#e3b341; --text:#e6edf3; --muted:#8b949e;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
 
-header { display: flex; align-items: center; gap: 10px; padding: 10px 20px; background: var(--panel); border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.logo { font-size: 20px; }
-header h1 { font-size: 15px; font-weight: 700; }
-.tabs { display: flex; gap: 4px; margin-left: auto; }
-.tab { padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all .15s; font-family: inherit; }
-.tab:hover { color: var(--text); border-color: var(--accent); }
-.tab.active { background: var(--accent); border-color: var(--accent); color: #0d1117; }
+header{display:flex;align-items:center;gap:10px;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--border);}
+.logo{font-size:20px;}
+header h1{font-size:15px;font-weight:700;}
+header p{font-size:12px;color:var(--muted);margin-left:8px;}
 
-.view { display: none; flex: 1; overflow: hidden; min-height: 0; }
-.view.active { display: flex; }
+.wrap{display:flex;flex:1;overflow:hidden;min-height:0;}
 
-.side { width: 260px; background: var(--panel); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
-.sec { padding: 16px; border-bottom: 1px solid var(--border); }
-.sec-title { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+/* SIDE */
+.side{width:270px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
+.sec{padding:16px;border-bottom:1px solid var(--border);}
+.sec-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
 
-.sl-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-.sl-head { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
-.sl-head b { color: var(--text); font-family: 'Space Grotesk', monospace; }
-input[type=range] { -webkit-appearance: none; width: 100%; height: 4px; border-radius: 2px; background: var(--border); outline: none; }
-input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+.tip{font-size:11px;color:var(--muted);line-height:1.65;padding:8px 10px;background:rgba(88,166,255,.05);border:1px solid rgba(88,166,255,.15);border-radius:6px;margin-bottom:10px;}
+.tip strong{color:var(--accent);}
 
-.btn { width: 100%; padding: 9px 12px; border-radius: 7px; border: none; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all .15s; }
-.btn+.btn { margin-top: 6px; }
-.btn-blue  { background: var(--accent); color: #0d1117; }
-.btn-blue:hover  { filter: brightness(1.15); }
-.btn-green { background: var(--green); color: #0d1117; }
-.btn-green:hover { filter: brightness(1.1); }
-.btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
-.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-.btn-red   { background: transparent; color: var(--orange); border: 1px solid var(--orange); }
-.btn-red:hover { background: rgba(247,129,102,.1); }
-.btn:disabled { background: var(--border) !important; color: var(--muted) !important; border-color: transparent !important; cursor: not-allowed; filter: none !important; }
+.sl-row{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.sl-head{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+.sl-head b{color:var(--text);font-family:'Space Grotesk',monospace;}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent);cursor:pointer;}
 
-.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 7px; padding: 9px; }
-.s-lbl { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
-.s-val { font-family: 'Space Grotesk', monospace; font-size: 16px; font-weight: 700; color: var(--accent); }
+.btn{width:100%;padding:9px 12px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
+.btn+.btn{margin-top:6px;}
+.btn-blue{background:var(--accent);color:#0d1117;}
+.btn-blue:hover{filter:brightness(1.15);}
+.btn-green{background:var(--green);color:#0d1117;}
+.btn-green:hover{filter:brightness(1.1);}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-red{background:transparent;color:var(--orange);border:1px solid var(--orange);}
+.btn-red:hover{background:rgba(247,129,102,.1);}
+.btn:disabled{background:var(--border)!important;color:var(--muted)!important;border-color:transparent!important;cursor:not-allowed;filter:none!important;}
 
-.tip { font-size: 11px; color: var(--muted); line-height: 1.65; padding: 8px 10px; background: rgba(88,166,255,.05); border: 1px solid rgba(88,166,255,.15); border-radius: 6px; margin-bottom: 10px; }
-.tip strong { color: var(--accent); }
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:9px;}
+.s-lbl{font-size:10px;color:var(--muted);margin-bottom:2px;}
+.s-val{font-family:'Space Grotesk',monospace;font-size:16px;font-weight:700;color:var(--accent);}
 
-/* REC dot */
-.rec-row { display: flex; align-items: center; gap: 7px; padding: 9px 11px; background: var(--card); border: 1px solid var(--border); border-radius: 7px; margin-bottom: 10px; font-size: 12px; color: var(--muted); }
-.rec-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
-.rec-dot.on { background: var(--orange); box-shadow: 0 0 8px var(--orange); animation: blink .8s infinite; }
-.rec-dot.ready { background: var(--green); }
-@keyframes blink { 0%,100%{opacity:1}50%{opacity:.2} }
+/* progress */
+.prog-wrap{display:none;margin-top:8px;}
+.prog-bar{background:var(--border);border-radius:4px;height:6px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--green);width:0%;transition:width .1s;border-radius:4px;}
+.prog-txt{font-size:11px;color:var(--muted);margin-top:4px;text-align:center;}
 
-/* CAM */
-.cam-center { flex: 1; background: #000; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-#camVideo { position: absolute; top:0; left:0; width:100%; height:100%; object-fit: cover; transform: scaleX(-1); opacity: 0; /* hidden — only used as source */ }
-#accumCanvas { position: absolute; top:0; left:0; width:100%; height:100%; transform: scaleX(-1); }
-.cam-ph { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); z-index: 2; text-align: center; pointer-events: none; }
-.cam-ph svg { opacity: .25; }
-.cam-ph p { font-size: 13px; }
-.cam-ph small { font-size: 11px; opacity: .6; }
-#liveFps { position: absolute; top:12px; left:12px; transform:scaleX(-1); font-family:'Space Grotesk',monospace; font-size:11px; color:rgba(255,255,255,.35); z-index:10; }
-#frameCount { position: absolute; top:12px; right:12px; transform:scaleX(-1); font-family:'Space Grotesk',monospace; font-size:13px; font-weight:700; color:var(--accent); z-index:10; background:rgba(0,0,0,.6); padding:5px 10px; border-radius:7px; display:none; }
+/* CENTER */
+.center{flex:1;background:#111;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#resultCanvas{max-width:100%;max-height:100%;object-fit:contain;display:none;}
+.center-ph{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--muted);text-align:center;padding:20px;}
+.center-ph svg{opacity:.25;}
+.center-ph p{font-size:13px;}
+.center-ph small{font-size:11px;opacity:.6;}
 
-/* VIDEO TAB */
-.vid-center { flex: 1; background: #000; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-#vidEl { position: absolute; top:0; left:0; width:100%; height:100%; object-fit: contain; }
-#vidOverlay { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none; }
-.vid-ph { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--muted); z-index: 2; text-align: center; }
-.vid-ph svg { opacity: .3; } .vid-ph p { font-size: 13px; } .vid-ph small { font-size: 11px; opacity:.6; }
+/* scrubber */
+.scrub-bar{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);padding:10px 16px;display:none;flex-direction:column;gap:6px;z-index:10;}
+.scrub-bar.on{display:flex;}
+.scrub-row{display:flex;align-items:center;gap:10px;}
+#scrubRange{flex:1;-webkit-appearance:none;height:4px;background:var(--border);border-radius:2px;outline:none;cursor:pointer;}
+#scrubRange::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--yellow);cursor:pointer;}
+.scrub-time{font-family:'Space Grotesk',monospace;font-size:12px;color:var(--yellow);white-space:nowrap;}
 
-.photo-area { background: var(--card); border: 2px dashed var(--border); border-radius: 8px; overflow: hidden; position: relative; cursor: crosshair; min-height: 140px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; transition: border-color .2s; }
-.photo-area:hover { border-color: var(--accent); }
-.photo-area.has { border-style: solid; }
-.ph-ph { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; padding: 14px; text-align: center; pointer-events: none; }
-.ph-ph svg { opacity: .35; }
-#vPhotoCanvas { display: none; width: 100%; }
-.color-row { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; }
-.swatch { width: 34px; height: 34px; border-radius: 7px; border: 2px solid rgba(255,255,255,.12); flex-shrink: 0; position: relative; overflow: hidden; }
-.swatch.empty::after { content:'?'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:16px; }
-.color-label { font-size:10px; color:var(--muted); margin-bottom:2px; }
-.color-val { font-family:'Space Grotesk',monospace; font-size:13px; font-weight:600; }
-
-.scrubber-bar { position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,.8); backdrop-filter:blur(6px); padding:10px 16px; display:none; flex-direction:column; gap:6px; z-index:10; }
-.scrubber-bar.visible { display:flex; }
-.scrub-row { display:flex; align-items:center; gap:10px; }
-#scrubRange { flex:1; -webkit-appearance:none; height:4px; background:var(--border); border-radius:2px; outline:none; cursor:pointer; }
-#scrubRange::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--yellow); cursor:pointer; }
-.scrub-time { font-family:'Space Grotesk',monospace; font-size:12px; color:var(--yellow); }
-.speed-row { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.speed-btn { padding:3px 8px; border-radius:5px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:11px; font-weight:600; cursor:pointer; font-family:'Space Grotesk',monospace; transition:all .15s; }
-.speed-btn:hover { border-color:var(--yellow); color:var(--yellow); }
-.speed-btn.active { background:var(--yellow); border-color:var(--yellow); color:#0d1117; }
-#videoInput { display:none; }
-.click-ring { position:absolute; width:30px; height:30px; border-radius:50%; border:2px solid white; transform:translate(-50%,-50%); pointer-events:none; animation:ringfade .5s ease-out forwards; }
-@keyframes ringfade { to { transform:translate(-50%,-50%) scale(1.8); opacity:0; } }
+#videoInput{display:none;}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">🎯</div>
-  <h1>물체 궤적 캡쳐</h1>
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('live',this)">📷 장노출 누적 촬영</button>
-    <button class="tab"        onclick="switchTab('video',this)">🎬 슬로모션 영상 분석</button>
-  </div>
+  <div class="logo">📸</div>
+  <h1>스트로보 궤적 캡쳐</h1>
+  <p>슬로모션 영상 → 다중섬광 사진처럼 합성</p>
 </header>
 
-<!-- ═══════════ TAB 1 : 장노출 누적 ═══════════ -->
-<div class="view active" id="view-live">
+<div class="wrap">
   <aside class="side">
 
     <div class="sec">
-      <div class="sec-title">원리</div>
+      <div class="sec-title">① 영상 업로드</div>
       <div class="tip">
-        배경은 매 프레임 <strong>같은 자리</strong>에 쌓여 밝아지고,<br>
-        움직이는 물체는 <strong>다른 자리</strong>마다 흔적을 남깁니다.<br>
-        → 색 지정 없이 장노출처럼 궤적이 나타납니다.
+        📱 슬로모션(120·240fps)으로 촬영한 영상을 올리세요.<br>
+        <strong>흰 배경 앞에서 찍으면</strong> 결과가 훨씬 선명해요.
       </div>
-    </div>
-
-    <div class="sec">
-      <div class="sec-title">카메라</div>
-      <button class="btn btn-blue" id="camBtn">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M15 10l4.553-2.276A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/>
-        </svg>
-        카메라 켜기
+      <input type="file" id="videoInput" accept="video/*">
+      <button class="btn btn-blue" onclick="document.getElementById('videoInput').click()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>
+        영상 업로드
       </button>
     </div>
 
     <div class="sec">
-      <div class="sec-title">누적 설정</div>
+      <div class="sec-title">② 합성 설정</div>
+
       <div class="sl-row">
-        <div class="sl-head"><span>프레임 투명도 (낮을수록 잔상 강함)</span><b id="alphaVal">0.04</b></div>
-        <input type="range" id="alphaSlider" min="1" max="20" value="4"
+        <div class="sl-head"><span>프레임 간격 (클수록 점이 듬성)</span><b id="stepVal">3</b>프레임</div>
+        <input type="range" id="stepSlider" min="1" max="30" value="3"
+               oninput="document.getElementById('stepVal').value=this.value">
+      </div>
+
+      <div class="sl-row">
+        <div class="sl-head"><span>시작 시간</span><b id="startVal">0.0</b>s</div>
+        <input type="range" id="startSlider" min="0" max="100" value="0" step="1"
+               oninput="updateStartEnd()">
+      </div>
+
+      <div class="sl-row">
+        <div class="sl-head"><span>종료 시간</span><b id="endVal">전체</b></div>
+        <input type="range" id="endSlider" min="0" max="100" value="100" step="1"
+               oninput="updateStartEnd()">
+      </div>
+
+      <div class="sl-row">
+        <div class="sl-head"><span>프레임 투명도 (낮을수록 잔상 강함)</span><b id="alphaVal">0.6</b></div>
+        <input type="range" id="alphaSlider" min="10" max="100" value="60"
                oninput="document.getElementById('alphaVal').value=(this.value/100).toFixed(2)">
       </div>
+
       <div class="sl-row">
-        <div class="sl-head"><span>밝기 부스트</span><b id="brightVal">1.0</b>×</div>
-        <input type="range" id="brightSlider" min="10" max="30" value="10"
-               oninput="document.getElementById('brightVal').value=(this.value/10).toFixed(1)">
+        <div class="sl-head"><span>배경 프레임 (첫 N프레임을 배경으로)</span><b id="bgVal">1</b></div>
+        <input type="range" id="bgSlider" min="1" max="10" value="1"
+               oninput="document.getElementById('bgVal').value=this.value">
       </div>
 
-      <div class="rec-row">
-        <div class="rec-dot" id="recDot"></div>
-        <span id="recStatus">카메라를 켜주세요</span>
-      </div>
+      <button class="btn btn-green" id="renderBtn" disabled>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        합성 시작
+      </button>
 
-      <button class="btn btn-green" id="recBtn" disabled>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
-        누적 시작
-      </button>
-      <button class="btn btn-red"   id="clearBtn" disabled>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
-        </svg>
-        초기화
-      </button>
+      <div class="prog-wrap" id="progWrap">
+        <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+        <div class="prog-txt" id="progTxt">처리 중...</div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">③ 결과</div>
       <button class="btn btn-ghost" id="saveBtn" disabled>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/>
-        </svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         이미지 저장
+      </button>
+      <button class="btn btn-red" id="resetBtn" disabled style="margin-top:6px">
+        다시 설정
       </button>
     </div>
 
     <div class="sec">
       <div class="sec-title">데이터</div>
       <div class="stat-grid">
-        <div class="stat-card"><div class="s-lbl">누적 프레임</div><div class="s-val" id="stFrames">0</div></div>
-        <div class="stat-card"><div class="s-lbl">경과 시간</div><div class="s-val" id="stTime">0s</div></div>
+        <div class="stat-card"><div class="s-lbl">영상 길이</div><div class="s-val" id="stDur">--</div></div>
+        <div class="stat-card"><div class="s-lbl">합성 프레임</div><div class="s-val" id="stFrames">--</div></div>
+        <div class="stat-card"><div class="s-lbl">영상 FPS</div><div class="s-val" id="stFps">--</div></div>
+        <div class="stat-card"><div class="s-lbl">해상도</div><div class="s-val" id="stRes">--</div></div>
       </div>
     </div>
 
   </aside>
 
-  <div class="cam-center">
-    <video id="camVideo" autoplay playsinline muted></video>
-    <canvas id="accumCanvas"></canvas>
-    <div class="cam-ph" id="camPh">
-      <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-        <path d="M15 10l4.553-2.276A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/>
-      </svg>
-      <p>카메라를 켜고 누적 시작을 누르세요</p>
-      <small>카메라를 고정한 뒤 물체를 움직이면 궤적이 저절로 쌓입니다</small>
-    </div>
-    <div id="liveFps">-- fps</div>
-    <div id="frameCount"></div>
-  </div>
-</div>
-
-<!-- ═══════════ TAB 2 : 슬로모션 영상 분석 ═══════════ -->
-<div class="view" id="view-video">
-  <aside class="side">
-
-    <div class="sec">
-      <div class="sec-title">영상 업로드</div>
-      <div class="tip">📱 슬로모션(120·240fps)으로 촬영한 영상을 올리면 빠른 운동도 정밀하게 분석돼요.</div>
-      <input type="file" id="videoInput" accept="video/*">
-      <button class="btn btn-blue" onclick="document.getElementById('videoInput').click()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/>
-        </svg>
-        영상 업로드 (슬로모 권장)
-      </button>
-    </div>
-
-    <div class="sec">
-      <div class="sec-title">물체 색 선택</div>
-      <div class="photo-area" id="vPhotoArea">
-        <div class="ph-ph" id="vPhotoPh">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <polygon points="5 3 19 12 5 21 5 3"/>
-          </svg>
-          <span>영상을 올리면 첫 프레임이 나타납니다</span>
-        </div>
-        <canvas id="vPhotoCanvas"></canvas>
-      </div>
-      <div class="color-row">
-        <div class="swatch empty" id="vSwatch"></div>
-        <div>
-          <div class="color-label">추적 색상</div>
-          <div class="color-val" id="vColorVal">프레임에서 클릭하세요</div>
-        </div>
-      </div>
-      <div class="sl-row">
-        <div class="sl-head"><span>색 허용 범위</span><b id="vTolVal">30</b></div>
-        <input type="range" id="vTol" min="10" max="70" value="30"
-               oninput="document.getElementById('vTolVal').value=this.value">
-      </div>
-    </div>
-
-    <div class="sec">
-      <div class="sec-title">분석 설정</div>
-      <div class="sl-row">
-        <div class="sl-head"><span>분석 프레임 간격</span><b id="vStepVal">1</b></div>
-        <input type="range" id="vStep" min="1" max="10" value="1"
-               oninput="document.getElementById('vStepVal').value=this.value">
-      </div>
-      <div class="sl-row">
-        <div class="sl-head"><span>궤적 두께</span><b id="vThickVal">3</b></div>
-        <input type="range" id="vThick" min="1" max="10" value="3"
-               oninput="document.getElementById('vThickVal').value=this.value">
-      </div>
-      <button class="btn btn-green" id="vAnalyzeBtn" disabled>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-        </svg>
-        궤적 분석 시작
-      </button>
-      <div id="vProgress" style="display:none;margin-top:8px">
-        <div style="background:var(--border);border-radius:4px;height:6px;overflow:hidden">
-          <div id="vBar" style="height:100%;background:var(--green);width:0%;transition:width .1s;border-radius:4px"></div>
-        </div>
-        <div style="font-size:11px;color:var(--muted);margin-top:4px;text-align:center" id="vProgTxt">분석 중...</div>
-      </div>
-      <button class="btn btn-red"   id="vClearBtn"  disabled style="margin-top:6px">궤적 초기화</button>
-      <button class="btn btn-ghost" id="vSaveBtn"   disabled>이미지 저장</button>
-    </div>
-
-    <div class="sec">
-      <div class="sec-title">통계</div>
-      <div class="stat-grid">
-        <div class="stat-card"><div class="s-lbl">총 프레임</div><div class="s-val" id="vsF">--</div></div>
-        <div class="stat-card"><div class="s-lbl">궤적 점 수</div><div class="s-val" id="vsP">--</div></div>
-        <div class="stat-card"><div class="s-lbl">영상 길이</div><div class="s-val" id="vsD">--</div></div>
-        <div class="stat-card"><div class="s-lbl">현재 시간</div><div class="s-val" id="vsCT">--</div></div>
-      </div>
-    </div>
-
-  </aside>
-
-  <div class="vid-center">
-    <video id="vidEl" playsinline></video>
-    <canvas id="vidOverlay"></canvas>
-    <div class="vid-ph" id="vidPh">
-      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+  <!-- CENTER: 결과 이미지 -->
+  <div class="center" id="centerArea">
+    <canvas id="resultCanvas"></canvas>
+    <div class="center-ph" id="centerPh">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
         <rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/>
       </svg>
-      <p>슬로모션 영상을 업로드하세요</p>
-      <small>자유낙하·진자·포사체 운동 등 빠른 운동에 적합</small>
+      <p>슬로모션 영상을 업로드하고 합성 시작을 누르세요</p>
+      <small>공, 진자, 떨어지는 물체 등 움직이는 물체의 궤적이<br>한 장의 사진처럼 합성됩니다</small>
     </div>
-    <div class="scrubber-bar" id="scrubBar">
+
+    <!-- 미리보기 스크러버 -->
+    <div class="scrub-bar" id="scrubBar">
       <div class="scrub-row">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" style="flex-shrink:0"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <span style="font-size:11px;color:var(--muted);white-space:nowrap">미리보기</span>
         <input type="range" id="scrubRange" min="0" max="1000" value="0">
         <span class="scrub-time" id="scrubTime">0.00s</span>
       </div>
-      <div class="speed-row">
-        <span style="font-size:10px;color:var(--muted);margin-right:2px">재생 속도:</span>
-        <button class="speed-btn active" data-speed="0.1">0.1×</button>
-        <button class="speed-btn" data-speed="0.25">0.25×</button>
-        <button class="speed-btn" data-speed="0.5">0.5×</button>
-        <button class="speed-btn" data-speed="1">1×</button>
-        <button class="speed-btn" data-speed="2">2×</button>
-        <button class="speed-btn" style="margin-left:auto;padding:3px 10px;border-color:var(--yellow);color:var(--yellow)" id="playPauseBtn" onclick="togglePlay()">▶ 재생</button>
-      </div>
     </div>
   </div>
 </div>
 
+<!-- 숨겨진 비디오 요소 -->
+<video id="vidEl" style="display:none" playsinline></video>
+
 <script>
-/* ── TAB SWITCH ── */
-function switchTab(id, btn) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('view-'+id).classList.add('active');
-  btn.classList.add('active');
-}
+const videoInput = document.getElementById('videoInput');
+const vidEl      = document.getElementById('vidEl');
+const renderBtn  = document.getElementById('renderBtn');
+const saveBtn    = document.getElementById('saveBtn');
+const resetBtn   = document.getElementById('resetBtn');
+const resultCanvas = document.getElementById('resultCanvas');
+const rc         = resultCanvas.getContext('2d');
+const centerPh   = document.getElementById('centerPh');
+const scrubBar   = document.getElementById('scrubBar');
+const scrubRange = document.getElementById('scrubRange');
+const progWrap   = document.getElementById('progWrap');
+const progFill   = document.getElementById('progFill');
+const progTxt    = document.getElementById('progTxt');
 
-/* ════════════════════════════════════════
-   TAB 1 — 장노출 누적 합성
-   핵심: 매 프레임을 낮은 alpha로 canvas에 덧그림
-   배경 → 같은 자리 반복 → 밝게 수렴
-   물체 → 다른 자리마다 흔적 → 궤적 자동 생성
-════════════════════════════════════════ */
-const camVideo    = document.getElementById('camVideo');
-const accumCanvas = document.getElementById('accumCanvas');
-const ac          = accumCanvas.getContext('2d');
-const camPh       = document.getElementById('camPh');
-const camBtn      = document.getElementById('camBtn');
-const recBtn      = document.getElementById('recBtn');
-const clearBtn    = document.getElementById('clearBtn');
-const saveBtn     = document.getElementById('saveBtn');
-const recDot      = document.getElementById('recDot');
-const recStatus   = document.getElementById('recStatus');
-const frameCountEl= document.getElementById('frameCount');
+let duration = 0;
 
-let camStream = null;
-let accumulating = false;
-let animId = null;
-let frames = 0;
-let startTime = null;
-let fpsCount = 0, fpsT = Date.now();
-
-camBtn.addEventListener('click', async () => {
-  if (camStream) { stopCam(); return; }
-  try {
-    camStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width:{ideal:1280}, height:{ideal:720} },
-      audio: false
-    });
-    camVideo.srcObject = camStream;
-    await camVideo.play();
-    camPh.style.display = 'none';
-    camBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> 카메라 끄기';
-    recBtn.disabled = false;
-    recDot.className = 'rec-dot ready';
-    recStatus.textContent = '준비됨 — 카메라를 고정하고 누적 시작';
-    previewLoop();
-  } catch(err) {
-    alert('카메라에 접근할 수 없습니다.\nHTTPS 환경(GitHub Pages 등)에서 사용해 주세요.\n\n오류: ' + err.message);
-  }
-});
-
-function stopCam() {
-  stopAccum();
-  if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; }
-  camVideo.srcObject = null;
-  camPh.style.display = 'flex';
-  camBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 10l4.553-2.276A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg> 카메라 켜기';
-  recBtn.disabled = true;
-  recDot.className = 'rec-dot';
-  recStatus.textContent = '카메라를 켜주세요';
-}
-
-/* 누적 전: 카메라 화면만 실시간으로 보여주는 루프 */
-function previewLoop() {
-  if (!camStream || accumulating) return;
-  requestAnimationFrame(previewLoop);
-  if (camVideo.readyState < 2) return;
-  const vw = camVideo.videoWidth, vh = camVideo.videoHeight;
-  if (!vw) return;
-  if (accumCanvas.width !== vw || accumCanvas.height !== vh) {
-    accumCanvas.width = vw; accumCanvas.height = vh;
-  }
-  ac.globalAlpha = 1;
-  ac.globalCompositeOperation = 'source-over';
-  ac.drawImage(camVideo, 0, 0);
-  fpsCount++;
-  const el = Date.now() - fpsT;
-  if (el > 1000) { document.getElementById('liveFps').textContent = Math.round(fpsCount*1000/el)+' fps'; fpsCount=0; fpsT=Date.now(); }
-}
-
-recBtn.addEventListener('click', () => {
-  if (accumulating) { stopAccum(); return; }
-  startAccum();
-});
-
-function startAccum() {
-  accumulating = true;
-  frames = 0; startTime = Date.now();
-  saveBtn.disabled = false; clearBtn.disabled = false;
-  recBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> 정지';
-  recDot.className = 'rec-dot on';
-  recStatus.textContent = '누적 중 — 물체를 움직이세요';
-  frameCountEl.style.display = 'block';
-
-  // 첫 프레임: 배경을 불투명하게 깔기
-  if (camVideo.readyState >= 2) {
-    const vw = camVideo.videoWidth, vh = camVideo.videoHeight;
-    accumCanvas.width = vw; accumCanvas.height = vh;
-    ac.globalAlpha = 1;
-    ac.globalCompositeOperation = 'source-over';
-    ac.drawImage(camVideo, 0, 0);
-  }
-
-  accumLoop();
-}
-
-function accumLoop() {
-  if (!accumulating) return;
-  animId = requestAnimationFrame(accumLoop);
-  if (!camStream || camVideo.readyState < 2) return;
-
-  const alpha  = +document.getElementById('alphaSlider').value / 100;
-  const bright = +document.getElementById('brightSlider').value / 10;
-
-  // 현재 프레임을 낮은 alpha로 누적
-  ac.globalAlpha = alpha;
-  ac.globalCompositeOperation = 'lighter';   // lighter: 밝은 쪽이 살아남음
-  ac.drawImage(camVideo, 0, 0);
-
-  frames++;
-  frameCountEl.textContent = frames + ' 프레임';
-  document.getElementById('stFrames').textContent = frames;
-  document.getElementById('stTime').textContent = ((Date.now()-startTime)/1000).toFixed(1)+'s';
-
-  fpsCount++;
-  const el = Date.now() - fpsT;
-  if (el > 1000) { document.getElementById('liveFps').textContent = Math.round(fpsCount*1000/el)+' fps'; fpsCount=0; fpsT=Date.now(); }
-}
-
-function stopAccum() {
-  accumulating = false;
-  cancelAnimationFrame(animId);
-  recBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg> 누적 시작';
-  recDot.className = 'rec-dot ready';
-  recStatus.textContent = `누적 완료 (${frames}프레임) — 다시 찍으려면 초기화 후 시작`;
-  if (camStream) previewLoop();
-}
-
-clearBtn.addEventListener('click', () => {
-  frames = 0;
-  frameCountEl.textContent = '0 프레임';
-  document.getElementById('stFrames').textContent = '0';
-  document.getElementById('stTime').textContent = '0s';
-  // 캔버스를 현재 카메라 프레임으로 리셋
-  if (camVideo.readyState >= 2) {
-    ac.globalAlpha = 1;
-    ac.globalCompositeOperation = 'source-over';
-    ac.drawImage(camVideo, 0, 0);
-  } else {
-    ac.clearRect(0, 0, accumCanvas.width, accumCanvas.height);
-  }
-});
-
-saveBtn.addEventListener('click', () => {
-  // 좌우 반전 보정해서 저장
-  const out = document.createElement('canvas');
-  out.width = accumCanvas.width; out.height = accumCanvas.height;
-  const oc = out.getContext('2d');
-  oc.save(); oc.scale(-1,1); oc.drawImage(accumCanvas,-out.width,0); oc.restore();
-  out.toBlob(blob => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = '장노출궤적_' + new Date().toISOString().slice(0,19).replace(/:/g,'-') + '.png';
-    a.click();
-  }, 'image/png');
-});
-
-/* ════════════════════════════════════════
-   TAB 2 — 슬로모션 영상 분석
-════════════════════════════════════════ */
-const videoInput   = document.getElementById('videoInput');
-const vidEl        = document.getElementById('vidEl');
-const vidOverlay   = document.getElementById('vidOverlay');
-const vidPh        = document.getElementById('vidPh');
-const vPhotoArea   = document.getElementById('vPhotoArea');
-const vPhotoCanvas = document.getElementById('vPhotoCanvas');
-const vPhotoPh     = document.getElementById('vPhotoPh');
-const vSwatch      = document.getElementById('vSwatch');
-const vColorVal    = document.getElementById('vColorVal');
-const vAnalyzeBtn  = document.getElementById('vAnalyzeBtn');
-const vClearBtn    = document.getElementById('vClearBtn');
-const vSaveBtn     = document.getElementById('vSaveBtn');
-const voc          = vidOverlay.getContext('2d');
-const vpc          = vPhotoCanvas.getContext('2d');
-
-let vColor=null, vTraj=[], vDuration=0, vAnalyzed=false;
-
-function vSetStep(n){[1,2,3].forEach(i=>{const el=document.getElementById('vn'+i);if(el)el.className='step-num'+(i<n?' done':i===n?' active':'');});}
-
+/* 영상 업로드 */
 videoInput.addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
-  vidEl.src = URL.createObjectURL(f);
-  vidPh.style.display = 'none';
+  const url = URL.createObjectURL(f);
+  vidEl.src = url;
   vidEl.addEventListener('loadedmetadata', () => {
-    vDuration = vidEl.duration;
-    document.getElementById('vsD').textContent = vDuration.toFixed(2)+'s';
-    document.getElementById('scrubBar').classList.add('visible');
-    vidEl.currentTime = 0.001;
-  }, {once:true});
-  vidEl.addEventListener('seeked', () => {
-    vPhotoCanvas.width = vidEl.videoWidth; vPhotoCanvas.height = vidEl.videoHeight;
-    vpc.drawImage(vidEl, 0, 0);
-    vPhotoCanvas.style.display = 'block'; vPhotoPh.style.display = 'none';
-    vPhotoArea.classList.add('has');
-    vColorVal.textContent = '프레임에서 물체를 클릭하세요';
+    duration = vidEl.duration;
+    document.getElementById('stDur').textContent = duration.toFixed(2) + 's';
+    document.getElementById('stRes').textContent = vidEl.videoWidth + '×' + vidEl.videoHeight;
+    // FPS 추정 (영상에서 직접 못 읽으므로 슬로모 기준 안내)
+    document.getElementById('stFps').textContent = '슬로모';
+    updateStartEnd();
+    renderBtn.disabled = false;
+    scrubBar.classList.add('on');
+
+    // 미리보기 스크러버
+    scrubRange.addEventListener('input', () => {
+      const t = (scrubRange.value / 1000) * duration;
+      vidEl.currentTime = t;
+      document.getElementById('scrubTime').textContent = t.toFixed(2) + 's';
+    });
   }, {once:true});
   videoInput.value = '';
 });
 
-vPhotoArea.addEventListener('click', e => {
-  if (!vPhotoCanvas.style.display || vPhotoCanvas.style.display==='none') return;
-  const rect=vPhotoCanvas.getBoundingClientRect();
-  const sx=vPhotoCanvas.width/rect.width, sy=vPhotoCanvas.height/rect.height;
-  const px=Math.round((e.clientX-rect.left)*sx), py=Math.round((e.clientY-rect.top)*sy);
-  const d=vpc.getImageData(Math.min(Math.max(px,0),vPhotoCanvas.width-1),Math.min(Math.max(py,0),vPhotoCanvas.height-1),1,1).data;
-  vColor={r:d[0],g:d[1],b:d[2]};
-  const hex='#'+[d[0],d[1],d[2]].map(v=>v.toString(16).padStart(2,'0')).join('');
-  vSwatch.style.background=hex; vSwatch.classList.remove('empty');
-  vColorVal.textContent=hex.toUpperCase();
-  vAnalyzeBtn.disabled=false;
-  const ring=document.createElement('div'); ring.className='click-ring';
-  ring.style.left=(e.clientX-vPhotoArea.getBoundingClientRect().left)+'px';
-  ring.style.top=(e.clientY-vPhotoArea.getBoundingClientRect().top)+'px';
-  vPhotoArea.appendChild(ring); setTimeout(()=>ring.remove(),600);
-});
+function updateStartEnd() {
+  if (!duration) return;
+  const s = +document.getElementById('startSlider').value / 100 * duration;
+  const e = +document.getElementById('endSlider').value / 100 * duration;
+  document.getElementById('startVal').value = s.toFixed(1);
+  document.getElementById('endVal').textContent = e >= duration - 0.05 ? '전체' : e.toFixed(1) + 's';
+}
 
-document.getElementById('scrubRange').addEventListener('input', function() {
-  if (!vDuration) return;
-  const t=(this.value/1000)*vDuration;
-  vidEl.currentTime=t; document.getElementById('scrubTime').textContent=t.toFixed(2)+'s';
-  document.getElementById('vsCT').textContent=t.toFixed(2)+'s';
-  if(vAnalyzed) drawVidOverlay(t);
-});
-vidEl.addEventListener('timeupdate', () => {
-  if (!vDuration) return;
-  document.getElementById('scrubRange').value=Math.round((vidEl.currentTime/vDuration)*1000);
-  document.getElementById('scrubTime').textContent=vidEl.currentTime.toFixed(2)+'s';
-  document.getElementById('vsCT').textContent=vidEl.currentTime.toFixed(2)+'s';
-  if(vAnalyzed) drawVidOverlay(vidEl.currentTime);
-});
-document.querySelectorAll('.speed-btn[data-speed]').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.speed-btn[data-speed]').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active'); vidEl.playbackRate=+btn.dataset.speed;
+/* seek 헬퍼 */
+function seekTo(t) {
+  return new Promise(res => {
+    vidEl.currentTime = t;
+    vidEl.addEventListener('seeked', res, {once: true});
   });
-});
-function togglePlay(){
-  const btn=document.getElementById('playPauseBtn');
-  if(vidEl.paused){vidEl.play();btn.textContent='⏸ 정지';}
-  else{vidEl.pause();btn.textContent='▶ 재생';}
 }
-vidEl.addEventListener('ended',()=>{document.getElementById('playPauseBtn').textContent='▶ 재생';});
 
-vAnalyzeBtn.addEventListener('click', async () => {
-  if(!vColor||!vidEl.src){alert('영상과 색상을 먼저 선택하세요!');return;}
-  vTraj=[]; vAnalyzed=false;
-  vAnalyzeBtn.disabled=true;
-  document.getElementById('vProgress').style.display='block';
-  const prog=document.getElementById('vBar'), progTxt=document.getElementById('vProgTxt');
-  const tol=+document.getElementById('vTol').value*3;
-  const step=+document.getElementById('vStep').value;
-  const {r,g,b}=vColor;
-  const off=document.createElement('canvas'); const oc2=off.getContext('2d');
-  const interval=step/30, total=Math.floor(vDuration/interval);
-  vidEl.pause();
-  for(let i=0;i<=total;i++){
-    const t=i*interval; if(t>vDuration)break;
-    await new Promise(res=>{vidEl.currentTime=t;vidEl.addEventListener('seeked',res,{once:true});});
-    const vw=vidEl.videoWidth,vh=vidEl.videoHeight; if(!vw)continue;
-    off.width=vw;off.height=vh; oc2.drawImage(vidEl,0,0);
-    const data=oc2.getImageData(0,0,vw,vh).data;
-    let sumX=0,sumY=0,count=0;
-    for(let y=0;y<vh;y+=4)for(let x=0;x<vw;x+=4){
-      const idx=(y*vw+x)*4;
-      if(Math.abs(data[idx]-r)+Math.abs(data[idx+1]-g)+Math.abs(data[idx+2]-b)<tol){sumX+=x;sumY+=y;count++;}
+/* 합성 시작 */
+renderBtn.addEventListener('click', async () => {
+  if (!vidEl.src) return;
+
+  const step     = +document.getElementById('stepSlider').value;
+  const alpha    = +document.getElementById('alphaSlider').value / 100;
+  const bgFrames = +document.getElementById('bgSlider').value;
+  const startT   = +document.getElementById('startSlider').value / 100 * duration;
+  const endT     = +document.getElementById('endSlider').value / 100 * duration;
+
+  renderBtn.disabled = true;
+  progWrap.style.display = 'block';
+
+  const vw = vidEl.videoWidth, vh = vidEl.videoHeight;
+  resultCanvas.width = vw; resultCanvas.height = vh;
+  resultCanvas.style.display = 'block';
+  centerPh.style.display = 'none';
+
+  // 오프스크린 캔버스
+  const off = document.createElement('canvas');
+  off.width = vw; off.height = vh;
+  const oc = off.getContext('2d');
+
+  // ── 1단계: 배경 프레임을 불투명하게 깔기 ──
+  // 영상 시작 부분의 bgFrames개 프레임을 평균내어 배경 생성
+  progTxt.textContent = '배경 추출 중...';
+  rc.globalAlpha = 1;
+  rc.globalCompositeOperation = 'source-over';
+
+  // 배경: startT 직전 프레임들을 평균
+  const bgStep = Math.max(0.033, (startT > 0.5 ? startT : 0.5) / bgFrames);
+  for (let i = 0; i < bgFrames; i++) {
+    const t = Math.max(0, startT - (bgFrames - i) * bgStep);
+    await seekTo(t);
+    oc.drawImage(vidEl, 0, 0);
+    if (i === 0) {
+      rc.drawImage(off, 0, 0);  // 첫 배경은 불투명
+    } else {
+      rc.globalAlpha = 1 / (i + 1);
+      rc.globalCompositeOperation = 'source-over';
+      rc.drawImage(off, 0, 0);
     }
-    if(count>30) vTraj.push({x:Math.round(sumX/count),y:Math.round(sumY/count),t,vw,vh});
-    prog.style.width=Math.round((i/total)*100)+'%';
-    progTxt.textContent=`분석 중... ${Math.round((i/total)*100)}% (${t.toFixed(2)}s)`;
-    if(i%5===0) await new Promise(r2=>setTimeout(r2,0));
   }
-  document.getElementById('vProgress').style.display='none';
-  vAnalyzeBtn.disabled=false; vAnalyzed=true;
-  document.getElementById('vsF').textContent=total;
-  document.getElementById('vsP').textContent=vTraj.length;
-  vClearBtn.disabled=false; vSaveBtn.disabled=false;
-  vidOverlay.width=vidEl.videoWidth; vidOverlay.height=vidEl.videoHeight;
-  drawVidOverlay(0); vidEl.currentTime=0;
+
+  // ── 2단계: 움직이는 물체 프레임들을 alpha로 누적 ──
+  rc.globalCompositeOperation = 'source-over';
+
+  // 프레임 간격을 시간으로 환산 (슬로모 240fps 기준)
+  // 실제 프레임레이트를 모르므로 총 프레임 수 = duration * 30 (재생 기준)으로 추정
+  const playFps = 30;
+  const intervalSec = step / playFps;
+  const times = [];
+  for (let t = startT; t <= endT + 0.001; t += intervalSec) {
+    times.push(Math.min(t, endT));
+  }
+  document.getElementById('stFrames').textContent = times.length;
+
+  for (let i = 0; i < times.length; i++) {
+    await seekTo(times[i]);
+    oc.drawImage(vidEl, 0, 0);
+    rc.globalAlpha = alpha;
+    rc.drawImage(off, 0, 0);
+
+    const pct = Math.round((i / times.length) * 100);
+    progFill.style.width = pct + '%';
+    progTxt.textContent = `합성 중... ${pct}% (${i+1}/${times.length} 프레임)`;
+    if (i % 3 === 0) await new Promise(r => setTimeout(r, 0));
+  }
+
+  progFill.style.width = '100%';
+  progTxt.textContent = '완료!';
+  setTimeout(() => { progWrap.style.display = 'none'; }, 1000);
+
+  renderBtn.disabled = false;
+  saveBtn.disabled = false;
+  resetBtn.disabled = false;
 });
 
-function drawVidOverlay(currentT){
-  if(!vTraj.length)return;
-  const {vw,vh}=vTraj[0];
-  if(vidOverlay.width!==vw){vidOverlay.width=vw;vidOverlay.height=vh;}
-  voc.clearRect(0,0,vw,vh);
-  const {r,g,b}=vColor, thick=+document.getElementById('vThick').value;
-  const visible=vTraj.filter(p=>p.t<=currentT+0.05);
-  if(!visible.length)return;
-  voc.beginPath();
-  vTraj.forEach((p,i)=>i===0?voc.moveTo(p.x,p.y):voc.lineTo(p.x,p.y));
-  voc.strokeStyle=`rgba(${r},${g},${b},.15)`; voc.lineWidth=thick; voc.lineCap='round'; voc.lineJoin='round'; voc.stroke();
-  if(visible.length>1){
-    voc.beginPath(); visible.forEach((p,i)=>i===0?voc.moveTo(p.x,p.y):voc.lineTo(p.x,p.y));
-    voc.strokeStyle=`rgba(${r},${g},${b},.95)`; voc.lineWidth=thick; voc.stroke();
-  }
-  const last=visible[visible.length-1];
-  voc.beginPath();voc.arc(last.x,last.y,thick+5,0,Math.PI*2);voc.fillStyle=`rgba(${r},${g},${b},.9)`;voc.fill();
-  voc.strokeStyle='rgba(255,255,255,.8)';voc.lineWidth=1.5;
-  voc.beginPath();voc.moveTo(last.x-15,last.y);voc.lineTo(last.x+15,last.y);voc.stroke();
-  voc.beginPath();voc.moveTo(last.x,last.y-15);voc.lineTo(last.x,last.y+15);voc.stroke();
-}
-
-vClearBtn.addEventListener('click',()=>{
-  vTraj=[];vAnalyzed=false;
-  voc.clearRect(0,0,vidOverlay.width,vidOverlay.height);
-  ['vsF','vsP'].forEach(id=>document.getElementById(id).textContent='--');
-  vClearBtn.disabled=true;vSaveBtn.disabled=true;
+/* 저장 */
+saveBtn.addEventListener('click', () => {
+  resultCanvas.toBlob(blob => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '스트로보_궤적_' + new Date().toISOString().slice(0,19).replace(/:/g,'-') + '.png';
+    a.click();
+  }, 'image/png');
 });
-vSaveBtn.addEventListener('click',()=>{
-  const out=document.createElement('canvas');out.width=vidEl.videoWidth;out.height=vidEl.videoHeight;
-  const oc3=out.getContext('2d');oc3.drawImage(vidEl,0,0);oc3.drawImage(vidOverlay,0,0);
-  out.toBlob(blob=>{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='궤적_영상분석.png';a.click();},'image/png');
+
+/* 리셋 */
+resetBtn.addEventListener('click', () => {
+  rc.clearRect(0, 0, resultCanvas.width, resultCanvas.height);
+  resultCanvas.style.display = 'none';
+  centerPh.style.display = 'flex';
+  saveBtn.disabled = true;
+  resetBtn.disabled = true;
+  document.getElementById('stFrames').textContent = '--';
 });
 </script>
 </body>
