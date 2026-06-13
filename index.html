@@ -155,6 +155,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
       <div class="tip-item"><div class="tip-num n2">2</div><div><div class="tip-title" id="t2t"></div><div class="tip-desc" id="t2d"></div></div></div>
       <div class="tip-item"><div class="tip-num n3">3</div><div><div class="tip-title" id="t3t"></div><div class="tip-desc" id="t3d"></div></div></div>
       <div class="tip-item"><div class="tip-num n4">4</div><div><div class="tip-title" id="t4t"></div><div class="tip-desc" id="t4d"></div></div></div>
+      <div class="tip-item"><div class="tip-num n5" style="background:rgba(63,185,80,.2);color:#3fb950;">5</div><div><div class="tip-title" id="t5t"></div><div class="tip-desc" id="t5d"></div></div></div>
     </div>
   </div>
   <div class="tip-footer"><button class="btn-start" id="tipStartBtn" onclick="startApp()"></button></div>
@@ -184,10 +185,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
       <div class="sec">
         <div class="sec-title" id="secSettings"></div>
         <div class="num-row"><label id="lblFC"></label><input type="number" class="num-input" id="frameCount" value="10" min="2" max="100"></div>
-        <div class="num-row"><label id="lblBG"></label><input type="number" class="num-input" id="bgSec" value="0.5" min="0.05" max="5" step="0.05"></div>
-        <div class="sl-row"><div class="sl-head"><span id="lblST"></span><b id="startVal">--</b>s</div><input type="range" id="startSlider" min="0" max="100" value="20" step="1" oninput="updateRange()"></div>
-        <div class="sl-row"><div class="sl-head"><span id="lblET"></span><b id="endVal">--</b>s</div><input type="range" id="endSlider" min="0" max="100" value="100" step="1" oninput="updateRange()"></div>
-        <div class="sl-row"><div class="sl-head"><span id="lblTH"></span><b id="threshVal">20</b></div><input type="range" id="threshSlider" min="3" max="80" value="20" oninput="document.getElementById('threshVal').value=this.value"></div>
+        <div style="background:rgba(88,166,255,.06);border:1.5px solid rgba(88,166,255,.3);border-radius:10px;padding:12px;margin-bottom:10px;">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;">⚙️ <span id="lblKeySettings"></span></div>
+          <div class="sl-row"><div class="sl-head"><span id="lblST"></span><b id="startVal">--</b>s</div><input type="range" id="startSlider" min="0" max="100" value="20" step="1" oninput="updateRange()"></div>
+          <div class="sl-row"><div class="sl-head"><span id="lblET"></span><b id="endVal">--</b>s</div><input type="range" id="endSlider" min="0" max="100" value="100" step="1" oninput="updateRange()"></div>
+          <div class="sl-row">
+            <div class="sl-head"><span id="lblTH"></span><b id="threshVal">20</b></div>
+            <input type="range" id="threshSlider" min="3" max="80" value="20" oninput="document.getElementById('threshVal').value=this.value">
+          </div>
+          <div style="font-size:10px;color:var(--muted);line-height:1.6;margin-top:4px;padding:6px 8px;background:rgba(0,0,0,.2);border-radius:6px" id="threshDesc"></div>
+        </div>
         <button class="btn btn-green" id="renderBtn" disabled>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
           <span id="btnRender"></span>
@@ -199,27 +206,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;heigh
         <button class="btn btn-ghost" id="saveBtn" disabled><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span id="btnSave"></span></button>
         <button class="btn btn-red" id="resetBtn" disabled style="margin-top:5px"><span id="btnReset"></span></button>
       </div>
-      <div class="sec" id="supportSec" style="display:none">
-        <div class="sec-title" id="secSupport"></div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px;margin-bottom:8px;">
-          <div style="font-size:16px;margin-bottom:5px">🎉</div>
-          <div style="font-size:12px;font-weight:700;margin-bottom:5px;line-height:1.5" id="supportTitle"></div>
-          <div style="font-size:11px;color:var(--muted);line-height:1.7" id="supportDesc"></div>
-        </div>
-        <a href="https://play.google.com/store" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:7px;padding:9px;border-radius:7px;background:#01875f;color:#fff;font-size:12px;font-weight:700;text-decoration:none;margin-bottom:5px;">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5v-17c0-.83 1.01-1.3 1.7-.8l15 8.5c.65.37.65 1.23 0 1.6L4.7 21.3c-.69.5-1.7.03-1.7-.8z"/></svg>
-          <span id="btnPlay"></span>
-        </a>
-        <div style="font-size:10px;color:var(--muted);text-align:center">Made with ❤️ by 효선오5</div>
-      </div>
-      <div class="sec">
-        <div class="sec-title" id="secData"></div>
-        <div class="stat-grid">
-          <div class="stat-card"><div class="s-lbl" id="lblDur"></div><div class="s-val" id="stDur">--</div></div>
-          <div class="stat-card"><div class="s-lbl" id="lblFr"></div><div class="s-val" id="stFrames">--</div></div>
-          <div class="stat-card"><div class="s-lbl" id="lblRes"></div><div class="s-val" id="stRes">--</div></div>
-          <div class="stat-card"><div class="s-lbl" id="lblStat"></div><div class="s-val" id="stStatus"></div></div>
-        </div>
       </div>
     </aside>
     <div class="center" id="centerArea">
@@ -239,12 +225,12 @@ const T = {
     app:"스트로보 궤적 캡쳐",badge:"📹 촬영 전 필독",h2:"다중섬광 사진을 잘 찍으려면?",
     sub:"영상을 올리기 전에 아래 촬영 팁을 읽어보세요.\n올바르게 찍어야 깔끔한 궤적 사진이 만들어집니다.",
     start:"✅ 촬영 팁 확인 — 앱 시작",tipBtn:"📋 촬영 팁",
-    tips:[{t:"📌 카메라는 반드시 고정!",d:"카메라가 움직이면 배경도 달라져 물체를 구분할 수 없어요.<br><strong>카메라는 고정하고 물체만 움직여야 합니다.</strong><br>지나가는 사람 없어야 하고, 진자에서 공 놓을 때 <em>손이 멈춰야 해요.</em>"},
+    tips:[{t:"📌 카메라는 반드시 고정!",d:"카메라가 움직이면 배경도 달라져 물체를 구분할 수 없어요.<br><strong>카메라는 고정하고 물체만 움직여야 합니다.</strong><br>지나가는 사람 없어야 하고, 진자에서 공 놓을 때 <em>손이 멈춰야 해요.</em>"},{t:"🎨 배경과 대비되는 색의 물체 사용",d:"배경 색과 물체 색이 <strong>뚜렷하게 달라야</strong> 잘 감지돼요.<br>예: 흰 배경 → 검정·빨강·파랑 공 / 어두운 배경 → 흰 공·밝은 공<br><em>색감 차이가 클수록 궤적이 선명하게 나타납니다.</em>"},
       {t:"🪂 자유낙하 운동",d:"<em>슬로모션으로 촬영</em>하고 <strong>미리 촬영 버튼을 눌러 놓은 상태</strong>에서 낙하시키세요."},
       {t:"🎳 등속 운동",d:"딱풀 굴리기, 친구가 등속으로 걷기 등을 촬영하세요."},
       {t:"🏓 진자 운동",d:"실에 붙인 탁구공을 진자운동 시키고 촬영하세요.<br><strong>반복되기 전에 영상을 종료하세요.</strong>"},
       {t:"🏸 포물선 운동",d:"탁구공을 비스듬히 던져 촬영하세요.<br><em>포물선이 높고 좁을수록 사진이 잘 찍힙니다.</em>"}],
-    up:"① 영상 업로드",utip:"영상 <strong>앞부분 0.5초</strong>는 물체 없이 배경만 나오게 촬영하세요.",ubtn:"영상 업로드",
+    up:"① 영상 업로드",utip:"영상 <strong>첫 장면</strong>에 물체 없이 배경만 나오게 촬영하세요.",ubtn:"영상 업로드",
     set:"② 합성 설정",fc:"합성 프레임 수",bg:"배경 구간 종료(초)",st:"운동 시작 시간",et:"운동 종료 시간",th:"감도 — 낮을수록 더 많이 감지",
     rbtn:"합성 시작",res:"③ 결과",save:"이미지 저장",savem:"새 탭에서 열기 (길게 눌러 저장)",reset:"다시 합성",
     sup:"☕ 개발자 응원",stitle:"궤적 사진이 잘 나왔나요?",sdesc:"이 앱은 과학 수업을 더 재미있게 만들고 싶어서 혼자 만들었어요.<br>별점이나 응원 한 마디가 큰 힘이 됩니다! 🙏",play:"Google Play에서 별점 남기기",
@@ -252,18 +238,18 @@ const T = {
     sready:"준비",sproc:"처리중",sdone:"완료",
     ph:"슬로모션 영상을 업로드하고 합성 시작을 누르세요",phs:"배경 차분으로 물체만 추출해 합성합니다",
     pbg:"배경 추출 중...",pcomp:"합성 중...",pdone:"완료! ✓",
-    popup:"📥 이미지를 <strong style='color:#fff'>길게 눌러</strong> 저장하세요",popblock:"팝업이 차단되었습니다. 팝업을 허용해 주세요."},
+    popup:"📥 이미지를 <strong style='color:#fff'>길게 눌러</strong> 저장하세요",popblock:"팝업이 차단되었습니다. 팝업을 허용해 주세요.",ikeys:"핵심 설정",itdesc:"낮을수록 물체를 더 많이 잡아요. 너무 낮으면 노이즈 발생, 너무 높으면 물체 일부 누락. 권장: 15~25"},
 
   en:{slogan:"Record a video first to capture stroboscopic motion,\nthen upload it to the app and analyze it.\nGet stunning stroboscopic trajectory photos!",sloganEm:"Get stunning stroboscopic trajectory photos!",
     app:"Strobo Motion Capture",badge:"📹 Read Before Shooting",h2:"How to get great stroboscopic photos?",
     sub:"Read the tips below before uploading your video.\nProper shooting makes clean trajectory photos.",
     start:"✅ Got it — Start App",tipBtn:"📋 Tips",
-    tips:[{t:"📌 Keep the camera fixed!",d:"If the camera moves, the background changes and objects can't be detected.<br><strong>Fix the camera — only the object should move.</strong><br>No people walking by. When releasing a pendulum, <em>keep your hand still.</em>"},
+    tips:[{t:"📌 Keep the camera fixed!",d:"If the camera moves, the background changes and objects can't be detected.<br><strong>Fix the camera — only the object should move.</strong><br>No people walking by. When releasing a pendulum, <em>keep your hand still.</em>"},{t:"🎨 Use an object with contrasting color",d:"The object must <strong>clearly differ in color</strong> from the background.<br>e.g. White background → dark/red/blue ball / Dark background → white ball<br><em>The greater the contrast, the sharper the trajectory.</em>"},
       {t:"🪂 Free Fall",d:"Shoot in <em>slow-motion</em> and press record <strong>before</strong> dropping the object."},
       {t:"🎳 Constant Velocity",d:"Roll a glue stick, have a friend walk steadily, etc."},
       {t:"🏓 Pendulum Motion",d:"Tape a ping-pong ball to a string and swing it.<br><strong>Stop recording before it swings back.</strong>"},
       {t:"🏸 Projectile Motion",d:"Toss a ping-pong ball at an angle.<br><em>A tall, narrow arc gives the best results.</em>"}],
-    up:"① Upload Video",utip:"The <strong>first 0.5 seconds</strong> should show only the background.",ubtn:"Upload Video",
+    up:"① Upload Video",utip:"Make sure the <strong>very first frame</strong> shows only the background with no object.",ubtn:"Upload Video",
     set:"② Settings",fc:"Number of frames (positions)",bg:"Background duration (sec)",st:"Motion start",et:"Motion end",th:"Sensitivity — lower = more detected",
     rbtn:"Start Compositing",res:"③ Result",save:"Save Image",savem:"Open in new tab (long-press to save)",reset:"Redo",
     sup:"☕ Support Developer",stitle:"Did your photo turn out great?",sdesc:"I built this to make science class more fun.<br>A rating or kind word means a lot! 🙏",play:"Rate on Google Play",
@@ -271,18 +257,18 @@ const T = {
     sready:"Ready",sproc:"Processing",sdone:"Done",
     ph:"Upload a slow-motion video and press Start",phs:"Background subtraction extracts only the moving object",
     pbg:"Extracting background...",pcomp:"Compositing...",pdone:"Done! ✓",
-    popup:"📥 <strong style='color:#fff'>Long-press</strong> the image to save",popblock:"Popup blocked. Please allow popups."},
+    popup:"📥 <strong style='color:#fff'>Long-press</strong> the image to save",popblock:"Popup blocked. Please allow popups.",ikeys:"Key Settings",itdesc:"Lower = more detected. Too low: noise; too high: object parts missed. Recommended: 15–25"},
 
   es:{slogan:"Graba primero un vídeo para capturar la trayectoria,\nluego súbelo a la app y analízalo.\n¡Obtén fotos estroboscópicas espectaculares!",sloganEm:"¡Obtén fotos estroboscópicas espectaculares!",
     app:"Captura Estroboscópica",badge:"📹 Leer antes de grabar",h2:"¿Cómo obtener buenas fotos estroboscópicas?",
     sub:"Lee los consejos antes de subir el vídeo.\nGrabar correctamente da fotos de trayectoria limpias.",
     start:"✅ Entendido — Iniciar",tipBtn:"📋 Consejos",
-    tips:[{t:"📌 ¡Mantén la cámara fija!",d:"Si la cámara se mueve no se detectan objetos.<br><strong>Fija la cámara; solo el objeto debe moverse.</strong><br>Sin personas pasando. Al soltar el péndulo, <em>mantén la mano quieta.</em>"},
+    tips:[{t:"📌 ¡Mantén la cámara fija!",d:"Si la cámara se mueve no se detectan objetos.<br><strong>Fija la cámara; solo el objeto debe moverse.</strong><br>Sin personas pasando. Al soltar el péndulo, <em>mantén la mano quieta.</em>"},{t:"🎨 Usa un objeto de color contrastante",d:"El objeto debe <strong>contrastar claramente</strong> con el fondo.<br>Ej: fondo blanco → pelota oscura/roja/azul / fondo oscuro → pelota blanca<br><em>Mayor contraste = trayectoria más nítida.</em>"},
       {t:"🪂 Caída libre",d:"Graba en <em>cámara lenta</em> y pulsa grabar <strong>antes</strong> de soltar el objeto."},
       {t:"🎳 Movimiento uniforme",d:"Rueda un lápiz pegamento, haz que un amigo camine a velocidad constante, etc."},
       {t:"🏓 Movimiento pendular",d:"Cuelga una pelota con un hilo y hazla oscilar.<br><strong>Para la grabación antes de que vuelva.</strong>"},
       {t:"🏸 Movimiento parabólico",d:"Lanza una pelota en ángulo.<br><em>Un arco alto y estrecho da los mejores resultados.</em>"}],
-    up:"① Subir vídeo",utip:"Los <strong>primeros 0,5 segundos</strong> deben mostrar solo el fondo.",ubtn:"Subir vídeo",
+    up:"① Subir vídeo",utip:"Asegúrate de que el <strong>primer fotograma</strong> muestre solo el fondo.",ubtn:"Subir vídeo",
     set:"② Ajustes",fc:"Nº de fotogramas",bg:"Duración fondo (s)",st:"Inicio movimiento",et:"Fin movimiento",th:"Sensibilidad — menor = más detección",
     rbtn:"Iniciar composición",res:"③ Resultado",save:"Guardar imagen",savem:"Abrir en nueva pestaña (mantén pulsado)",reset:"Rehacer",
     sup:"☕ Apoya al desarrollador",stitle:"¿Salió bien la foto?",sdesc:"Creé esta app para hacer la ciencia más divertida.<br>¡Una valoración me ayuda mucho! 🙏",play:"Valorar en Google Play",
@@ -290,18 +276,18 @@ const T = {
     sready:"Listo",sproc:"Procesando",sdone:"Hecho",
     ph:"Sube un vídeo a cámara lenta y pulsa Iniciar",phs:"La sustracción de fondo extrae solo el objeto",
     pbg:"Extrayendo fondo...",pcomp:"Componiendo...",pdone:"¡Hecho! ✓",
-    popup:"📥 <strong style='color:#fff'>Mantén pulsada</strong> la imagen para guardar",popblock:"Ventana emergente bloqueada. Por favor permítela."},
+    popup:"📥 <strong style='color:#fff'>Mantén pulsada</strong> la imagen para guardar",popblock:"Ventana emergente bloqueada. Por favor permítela.",ikeys:"Ajustes clave",itdesc:"Menor = más detectado. Muy bajo: ruido; muy alto: partes perdidas. Recomendado: 15–25"},
 
   fr:{slogan:"Filmez d'abord une vidéo pour capturer le mouvement,\npuis importez-la dans l'app pour l'analyser.\nObtenez de superbes photos stroboscopiques !",sloganEm:"Obtenez de superbes photos stroboscopiques !",
     app:"Capture Stroboscopique",badge:"📹 Lire avant de filmer",h2:"Comment obtenir de bonnes photos stroboscopiques ?",
     sub:"Lisez les conseils avant de télécharger votre vidéo.\nUn bon tournage donne des photos de trajectoire nettes.",
     start:"✅ Compris — Démarrer",tipBtn:"📋 Conseils",
-    tips:[{t:"📌 Fixez l'appareil photo !",d:"Si la caméra bouge, le fond change et les objets ne sont pas détectés.<br><strong>Fixez la caméra — seul l'objet doit bouger.</strong><br>Pas de passants. Pour le pendule, <em>gardez la main immobile.</em>"},
+    tips:[{t:"📌 Fixez l'appareil photo !",d:"Si la caméra bouge, le fond change et les objets ne sont pas détectés.<br><strong>Fixez la caméra — seul l'objet doit bouger.</strong><br>Pas de passants. Pour le pendule, <em>gardez la main immobile.</em>"},{t:"🎨 Utilisez un objet de couleur contrastée",d:"L'objet doit <strong>contraster clairement</strong> avec le fond.<br>Ex: fond blanc → balle sombre/rouge/bleue / fond sombre → balle blanche<br><em>Plus le contraste est grand, plus la trajectoire est nette.</em>"},
       {t:"🪂 Chute libre",d:"Filmez en <em>ralenti</em> et appuyez sur enregistrer <strong>avant</strong> de lâcher l'objet."},
       {t:"🎳 Mouvement uniforme",d:"Faites rouler un bâton de colle, demandez à un ami de marcher à vitesse constante, etc."},
       {t:"🏓 Mouvement pendulaire",d:"Fixez une balle de ping-pong à un fil et faites-la osciller.<br><strong>Arrêtez l'enregistrement avant qu'elle revienne.</strong>"},
       {t:"🏸 Mouvement parabolique",d:"Lancez une balle de ping-pong en angle.<br><em>Un arc haut et étroit donne les meilleurs résultats.</em>"}],
-    up:"① Importer la vidéo",utip:"Les <strong>0,5 premières secondes</strong> ne doivent montrer que le fond.",ubtn:"Importer la vidéo",
+    up:"① Importer la vidéo",utip:"Assurez-vous que la <strong>toute première image</strong> ne montre que le fond.",ubtn:"Importer la vidéo",
     set:"② Paramètres",fc:"Nombre d'images",bg:"Durée du fond (s)",st:"Début du mouvement",et:"Fin du mouvement",th:"Sensibilité — plus bas = plus détecté",
     rbtn:"Lancer la composition",res:"③ Résultat",save:"Enregistrer l'image",savem:"Ouvrir dans un nouvel onglet (appui long pour sauvegarder)",reset:"Recommencer",
     sup:"☕ Soutenir le développeur",stitle:"La photo est-elle réussie ?",sdesc:"J'ai créé cette app pour rendre les cours de sciences plus amusants.<br>Une note ou un mot d'encouragement m'aide beaucoup ! 🙏",play:"Noter sur Google Play",
@@ -309,18 +295,18 @@ const T = {
     sready:"Prêt",sproc:"Traitement",sdone:"Terminé",
     ph:"Importez une vidéo au ralenti et appuyez sur Lancer",phs:"La soustraction de fond extrait uniquement l'objet en mouvement",
     pbg:"Extraction du fond...",pcomp:"Composition...",pdone:"Terminé ! ✓",
-    popup:"📥 <strong style='color:#fff'>Appuyez longuement</strong> sur l'image pour sauvegarder",popblock:"Fenêtre contextuelle bloquée. Veuillez l'autoriser."},
+    popup:"📥 <strong style='color:#fff'>Appuyez longuement</strong> sur l'image pour sauvegarder",popblock:"Fenêtre contextuelle bloquée. Veuillez l'autoriser.",ikeys:"Réglages clés",itdesc:"Plus bas = plus détecté. Trop bas: bruit; trop haut: parties manquantes. Recommandé: 15–25"},
 
   de:{slogan:"Nimm zuerst ein Video auf, um die Bewegung festzuhalten,\nlade es dann in die App hoch und analysiere es.\nErhalte beeindruckende Stroboskop-Aufnahmen!",sloganEm:"Erhalte beeindruckende Stroboskop-Aufnahmen!",
     app:"Stroboskop-Bewegungserfassung",badge:"📹 Vor der Aufnahme lesen",h2:"Wie bekommt man gute Stroboskopfotos?",
     sub:"Lies die Tipps, bevor du das Video hochlädst.\nRichtige Aufnahme ergibt saubere Trajektorienfotos.",
     start:"✅ Verstanden — App starten",tipBtn:"📋 Aufnahmetipps",
-    tips:[{t:"📌 Kamera festhalten!",d:"Wenn die Kamera sich bewegt, ändert sich der Hintergrund und Objekte werden nicht erkannt.<br><strong>Fixiere die Kamera — nur das Objekt soll sich bewegen.</strong><br>Keine vorbeigehenden Personen. Beim Pendel <em>die Hand nach dem Loslassen stillhalten.</em>"},
+    tips:[{t:"📌 Kamera festhalten!",d:"Wenn die Kamera sich bewegt, ändert sich der Hintergrund und Objekte werden nicht erkannt.<br><strong>Fixiere die Kamera — nur das Objekt soll sich bewegen.</strong><br>Keine vorbeigehenden Personen. Beim Pendel <em>die Hand nach dem Loslassen stillhalten.</em>"},{t:"🎨 Objekt mit Kontrastfarbe verwenden",d:"Das Objekt muss sich <strong>deutlich farblich</strong> vom Hintergrund abheben.<br>z.B. Weißer Hintergrund → dunkler/roter/blauer Ball / Dunkler Hintergrund → weißer Ball<br><em>Je größer der Kontrast, desto schärfer die Trajektorie.</em>"},
       {t:"🪂 Freier Fall",d:"Nimm in <em>Zeitlupe</em> auf und drücke <strong>vor</strong> dem Loslassen auf Aufnahme."},
       {t:"🎳 Gleichförmige Bewegung",d:"Einen Klebestift rollen lassen, einen Freund gleichmäßig gehen lassen usw."},
       {t:"🏓 Pendelbewegung",d:"Klebe einen Tischtennisball an einen Faden und schwinge ihn wie ein Pendel.<br><strong>Stoppe die Aufnahme, bevor er zurückschwingt.</strong>"},
       {t:"🏸 Wurfbewegung",d:"Wirf einen Tischtennisball schräg hoch.<br><em>Ein hoher, schmaler Bogen liefert die besten Ergebnisse.</em>"}],
-    up:"① Video hochladen",utip:"Die <strong>ersten 0,5 Sekunden</strong> sollten nur den Hintergrund zeigen.",ubtn:"Video hochladen",
+    up:"① Video hochladen",utip:"Stelle sicher, dass das <strong>allererste Bild</strong> nur den Hintergrund zeigt.",ubtn:"Video hochladen",
     set:"② Einstellungen",fc:"Anzahl der Frames",bg:"Hintergrunddauer (Sek.)",st:"Bewegungsstart",et:"Bewegungsende",th:"Empfindlichkeit — niedriger = mehr erkannt",
     rbtn:"Komposition starten",res:"③ Ergebnis",save:"Bild speichern",savem:"In neuem Tab öffnen (Gedrückt halten zum Speichern)",reset:"Wiederholen",
     sup:"☕ Entwickler unterstützen",stitle:"Ist das Foto gelungen?",sdesc:"Ich habe diese App entwickelt, um den Naturwissenschaftsunterricht spannender zu machen.<br>Eine Bewertung oder ein nettes Wort motiviert mich sehr! 🙏",play:"Bei Google Play bewerten",
@@ -328,18 +314,18 @@ const T = {
     sready:"Bereit",sproc:"Verarbeitung",sdone:"Fertig",
     ph:"Lade ein Zeitlupenvideo hoch und drücke Starten",phs:"Hintergrundsubtraktion extrahiert nur das bewegte Objekt",
     pbg:"Hintergrund extrahieren...",pcomp:"Komponieren...",pdone:"Fertig! ✓",
-    popup:"📥 Bild <strong style='color:#fff'>gedrückt halten</strong> zum Speichern",popblock:"Popup blockiert. Bitte Popups erlauben."},
+    popup:"📥 Bild <strong style='color:#fff'>gedrückt halten</strong> zum Speichern",popblock:"Popup blockiert. Bitte Popups erlauben.",ikeys:"Schlüsseleinstellungen",itdesc:"Niedriger = mehr erkannt. Zu niedrig: Rauschen; zu hoch: Teile fehlen. Empfohlen: 15–25"},
 
   ja:{slogan:"まずストロボ軌跡用の動画を撮影し、\nアプリに動画をアップロードして分析してみましょう。\n素敵なストロボ軌跡写真をゲットしよう！",sloganEm:"素敵なストロボ軌跡写真をゲットしよう！",
     app:"ストロボ軌跡キャプチャ",badge:"📹 撮影前に必読",h2:"多重露光写真をきれいに撮るには？",
     sub:"動画をアップロードする前に撮影のヒントをお読みください。\n正しく撮影することで軌跡写真が美しく仕上がります。",
     start:"✅ 確認しました — アプリ開始",tipBtn:"📋 撮影ヒント",
-    tips:[{t:"📌 カメラは必ず固定！",d:"カメラが動くと背景が変わり物体を検出できません。<br><strong>カメラを固定し、物体だけを動かしてください。</strong><br>人が通り過ぎないように。振り子の玉を放すときは<em>手を止めてください。</em>"},
+    tips:[{t:"📌 カメラは必ず固定！",d:"カメラが動くと背景が変わり物体を検出できません。<br><strong>カメラを固定し、物体だけを動かしてください。</strong><br>人が通り過ぎないように。振り子の玉を放すときは<em>手を止めてください。</em>"},{t:"🎨 背景と対照的な色の物体を使用",d:"物体は背景と<strong>色がはっきり異なる</strong>必要があります。<br>例: 白い背景 → 黒・赤・青いボール / 暗い背景 → 白いボール<br><em>コントラストが大きいほど軌跡が鮮明に出ます。</em>"},
       {t:"🪂 自由落下運動",d:"<em>スローモーションで撮影</em>し、<strong>事前に録画ボタンを押した状態</strong>で落下させてください。"},
       {t:"🎳 等速運動",d:"スティックのりを転がす、友達に等速で歩いてもらうなど。"},
       {t:"🏓 振り子運動",d:"テープで固定した卓球ボールを振り子運動させて撮影。<br><strong>折り返す前に撮影を終了してください。</strong>"},
       {t:"🏸 放物線運動",d:"卓球ボールを斜めに投げて撮影。<br><em>放物線が高く細いほどきれいに撮れます。</em>"}],
-    up:"① 動画アップロード",utip:"動画の<strong>最初の0.5秒</strong>は物体なしで背景のみを映してください。",ubtn:"動画をアップロード",
+    up:"① 動画アップロード",utip:"動画の<strong>最初のフレーム</strong>は物体なしで背景のみを映してください。",ubtn:"動画をアップロード",
     set:"② 合成設定",fc:"合成フレーム数",bg:"背景区間（秒）",st:"運動開始時刻",et:"運動終了時刻",th:"感度 — 低いほど多く検出",
     rbtn:"合成開始",res:"③ 結果",save:"画像を保存",savem:"新しいタブで開く（長押しで保存）",reset:"やり直す",
     sup:"☕ 開発者を応援",stitle:"軌跡写真はうまくできましたか？",sdesc:"理科の授業をもっと楽しくしたくてこのアプリを作りました。<br>レビューや応援の一言が励みになります！ 🙏",play:"Google Playでレビューする",
@@ -347,18 +333,18 @@ const T = {
     sready:"準備完了",sproc:"処理中",sdone:"完了",
     ph:"スローモーション動画をアップロードして合成開始を押してください",phs:"背景差分で動いている物体のみを抽出して合成します",
     pbg:"背景を抽出中...",pcomp:"合成中...",pdone:"完了！ ✓",
-    popup:"📥 画像を<strong style='color:#fff'>長押し</strong>して保存してください",popblock:"ポップアップがブロックされました。許可してください。"},
+    popup:"📥 画像を<strong style='color:#fff'>長押し</strong>して保存してください",popblock:"ポップアップがブロックされました。許可してください。",ikeys:"重要設定",itdesc:"低いほど多く検出されます。低すぎるとノイズ、高すぎると物体の一部が消えます。推奨: 15～25"},
 
   zh:{slogan:"先录制一段视频来捕捉频闪运动，\n然后上传到应用中进行分析。\n获取精彩的频闪轨迹照片！",sloganEm:"获取精彩的频闪轨迹照片！",
     app:"频闪运动轨迹捕捉",badge:"📹 拍摄前必读",h2:"如何拍出好的频闪照片？",
     sub:"上传视频前请阅读以下拍摄技巧。\n正确拍摄才能生成清晰的轨迹照片。",
     start:"✅ 已了解 — 开始使用",tipBtn:"📋 拍摄技巧",
-    tips:[{t:"📌 相机必须固定！",d:"相机移动会导致背景变化，无法检测物体。<br><strong>固定相机，只让物体移动。</strong><br>避免有人经过，摆球放手时<em>手要保持静止。</em>"},
+    tips:[{t:"📌 相机必须固定！",d:"相机移动会导致背景变化，无法检测物体。<br><strong>固定相机，只让物体移动。</strong><br>避免有人经过，摆球放手时<em>手要保持静止。</em>"},{t:"🎨 使用与背景形成对比的颜色",d:"物体颜色必须与背景<strong>明显不同</strong>。<br>例：白色背景→深色/红色/蓝色球 / 深色背景→白色球<br><em>对比越大，轨迹越清晰。</em>"},
       {t:"🪂 自由落体运动",d:"使用<em>慢动作模式拍摄</em>，<strong>提前按下录制按钮</strong>再释放物体。"},
       {t:"🎳 匀速运动",d:"滚动固体胶棒、让朋友匀速行走等。"},
       {t:"🏓 单摆运动",d:"用胶带将乒乓球固定在绳子上做摆动运动。<br><strong>在摆回来之前停止录制。</strong>"},
       {t:"🏸 抛体运动",d:"斜向抛出乒乓球进行拍摄。<br><em>抛物线越高越窄，效果越好。</em>"}],
-    up:"① 上传视频",utip:"视频<strong>前0.5秒</strong>请只拍背景，不要有物体出现。",ubtn:"上传视频",
+    up:"① 上传视频",utip:"确保视频<strong>第一帧</strong>只显示背景，没有物体。",ubtn:"上传视频",
     set:"② 合成设置",fc:"合成帧数",bg:"背景区间（秒）",st:"运动开始时间",et:"运动结束时间",th:"灵敏度 — 越低检测越多",
     rbtn:"开始合成",res:"③ 结果",save:"保存图片",savem:"在新标签页中打开（长按保存）",reset:"重新合成",
     sup:"☕ 支持开发者",stitle:"轨迹照片效果好吗？",sdesc:"我制作这个应用是为了让科学课更有趣。<br>如果觉得有用，请给个好评！ 🙏",play:"在Google Play上评分",
@@ -366,18 +352,18 @@ const T = {
     sready:"准备就绪",sproc:"处理中",sdone:"完成",
     ph:"上传慢动作视频后点击开始合成",phs:"通过背景差分提取运动物体并合成",
     pbg:"提取背景中...",pcomp:"合成中...",pdone:"完成！ ✓",
-    popup:"📥 请<strong style='color:#fff'>长按</strong>图片进行保存",popblock:"弹出窗口被拦截，请在浏览器中允许。"},
+    popup:"📥 请<strong style='color:#fff'>长按</strong>图片进行保存",popblock:"弹出窗口被拦截，请在浏览器中允许。",ikeys:"关键设置",itdesc:"越低检测越多。太低：噪点；太高：物体部分缺失。建议：15–25"},
 
   ru:{slogan:"Сначала запишите видео для захвата движения,\nзатем загрузите его в приложение и проанализируйте.\nПолучите впечатляющие стробоскопические фото!",sloganEm:"Получите впечатляющие стробоскопические фото!",
     app:"Стробоскопический захват",badge:"📹 Читайте перед съёмкой",h2:"Как получить хорошие стробоскопические фото?",
     sub:"Прочитайте советы перед загрузкой видео.\nПравильная съёмка даёт чёткие фото траектории.",
     start:"✅ Понятно — Начать",tipBtn:"📋 Советы",
-    tips:[{t:"📌 Зафиксируйте камеру!",d:"Если камера движется, фон меняется и объект не распознаётся.<br><strong>Зафиксируйте камеру — двигаться должен только объект.</strong><br>Никаких посторонних в кадре. При маятнике <em>держите руку неподвижно.</em>"},
+    tips:[{t:"📌 Зафиксируйте камеру!",d:"Если камера движется, фон меняется и объект не распознаётся.<br><strong>Зафиксируйте камеру — двигаться должен только объект.</strong><br>Никаких посторонних в кадре. При маятнике <em>держите руку неподвижно.</em>"},{t:"🎨 Используйте объект контрастного цвета",d:"Цвет объекта должен <strong>явно отличаться</strong> от фона.<br>Напр.: белый фон → тёмный/красный/синий мяч / тёмный фон → белый мяч<br><em>Чем больше контраст, тем чётче траектория.</em>"},
       {t:"🪂 Свободное падение",d:"Снимайте в <em>замедленном режиме</em> и нажмите запись <strong>до</strong> падения объекта."},
       {t:"🎳 Равномерное движение",d:"Катайте карандаш, попросите друга идти с постоянной скоростью и т.д."},
       {t:"🏓 Маятник",d:"Прикрепите шарик к нитке и раскачайте его.<br><strong>Остановите запись до обратного хода.</strong>"},
       {t:"🏸 Движение снаряда",d:"Бросьте мяч под углом.<br><em>Чем выше и уже дуга, тем лучше результат.</em>"}],
-    up:"① Загрузить видео",utip:"Первые <strong>0,5 секунды</strong> должны показывать только фон.",ubtn:"Загрузить видео",
+    up:"① Загрузить видео",utip:"Убедитесь, что <strong>первый кадр</strong> показывает только фон без объекта.",ubtn:"Загрузить видео",
     set:"② Настройки",fc:"Количество кадров",bg:"Длительность фона (сек)",st:"Начало движения",et:"Конец движения",th:"Чувствительность — меньше = больше захвата",
     rbtn:"Начать",res:"③ Результат",save:"Сохранить изображение",savem:"Открыть в новой вкладке (долгое нажатие)",reset:"Повторить",
     sup:"☕ Поддержать разработчика",stitle:"Фото получилось хорошим?",sdesc:"Я создал это приложение, чтобы сделать урок интереснее.<br>Оценка или добрые слова очень помогают! 🙏",play:"Оценить в Google Play",
@@ -385,18 +371,18 @@ const T = {
     sready:"Готово",sproc:"Обработка",sdone:"Готово",
     ph:"Загрузите замедленное видео и нажмите «Начать»",phs:"Вычитание фона извлекает только движущийся объект",
     pbg:"Извлечение фона...",pcomp:"Композиция...",pdone:"Готово! ✓",
-    popup:"📥 <strong style='color:#fff'>Удерживайте</strong> изображение для сохранения",popblock:"Всплывающее окно заблокировано. Разрешите всплывающие окна."},
+    popup:"📥 <strong style='color:#fff'>Удерживайте</strong> изображение для сохранения",popblock:"Всплывающее окно заблокировано. Разрешите всплывающие окна.",ikeys:"Ключевые настройки",itdesc:"Ниже = больше захвата. Слишком низко: шум; слишком высоко: часть объекта теряется. Рекомендуется: 15–25"},
 
   ar:{slogan:"سجّل أولاً مقطع فيديو لالتقاط حركة الجسم،\nثم ارفعه في التطبيق وحلّله.\nاحصل على صور مسار رائعة!",sloganEm:"احصل على صور مسار رائعة!",
     app:"التقاط مسار الحركة",badge:"📹 اقرأ قبل التصوير",h2:"كيف تحصل على صور ستروبوسكوبية جيدة؟",
     sub:"اقرأ النصائح قبل رفع الفيديو.\nالتصوير الصحيح يعطي صوراً واضحة للمسار.",
     start:"✅ فهمت — ابدأ التطبيق",tipBtn:"📋 نصائح",
-    tips:[{t:"📌 يجب تثبيت الكاميرا!",d:"إذا تحركت الكاميرا، تغيرت الخلفية ولا يمكن اكتشاف الجسم.<br><strong>ثبّت الكاميرا وحرّك الجسم فقط.</strong><br>لا يجب أن يمر أحد أمام الكاميرا. عند البندول، <em>أبقِ يدك ثابتة.</em>"},
+    tips:[{t:"📌 يجب تثبيت الكاميرا!",d:"إذا تحركت الكاميرا، تغيرت الخلفية ولا يمكن اكتشاف الجسم.<br><strong>ثبّت الكاميرا وحرّك الجسم فقط.</strong><br>لا يجب أن يمر أحد أمام الكاميرا. عند البندول، <em>أبقِ يدك ثابتة.</em>"},{t:"🎨 استخدم جسماً بلون مختلف عن الخلفية",d:"يجب أن <strong>يختلف لون الجسم بوضوح</strong> عن الخلفية.<br>مثال: خلفية بيضاء ← كرة داكنة/حمراء/زرقاء / خلفية داكنة ← كرة بيضاء<br><em>كلما زاد التباين، كانت المسارات أوضح.</em>"},
       {t:"🪂 السقوط الحر",d:"صوّر بـ<em>وضع الحركة البطيئة</em> واضغط تسجيل <strong>قبل</strong> إسقاط الجسم."},
       {t:"🎳 الحركة المنتظمة",d:"دحرجة قلم لاصق، أو اطلب من صديق المشي بسرعة ثابتة."},
       {t:"🏓 حركة البندول",d:"علّق كرة بخيط وحرّكها كبندول.<br><strong>أوقف التسجيل قبل أن تعود.</strong>"},
       {t:"🏸 الحركة القذفية",d:"ارمِ كرة بزاوية.<br><em>كلما كان القوس أعلى وأضيق، كانت النتيجة أفضل.</em>"}],
-    up:"① رفع الفيديو",utip:"يجب أن تُظهر <strong>أول 0.5 ثانية</strong> الخلفية فقط بدون الجسم.",ubtn:"رفع الفيديو",
+    up:"① رفع الفيديو",utip:"تأكد من أن <strong>الإطار الأول</strong> يُظهر الخلفية فقط بدون الجسم.",ubtn:"رفع الفيديو",
     set:"② الإعدادات",fc:"عدد الإطارات",bg:"مدة الخلفية (ثانية)",st:"بداية الحركة",et:"نهاية الحركة",th:"الحساسية — كلما قلّت زاد الاكتشاف",
     rbtn:"بدء الدمج",res:"③ النتيجة",save:"حفظ الصورة",savem:"فتح في تبويب جديد (اضغط مطولاً للحفظ)",reset:"إعادة الدمج",
     sup:"☕ ادعم المطوّر",stitle:"هل ظهرت الصورة بشكل جيد؟",sdesc:"صنعت هذا التطبيق لجعل دروس العلوم أكثر متعة.<br>تقييمك يعني لي الكثير! 🙏",play:"تقييم على Google Play",
@@ -404,18 +390,18 @@ const T = {
     sready:"جاهز",sproc:"جارٍ المعالجة",sdone:"تم",
     ph:"ارفع فيديو بالحركة البطيئة ثم اضغط ابدأ",phs:"يستخرج طرح الخلفية الجسم المتحرك فقط",
     pbg:"استخراج الخلفية...",pcomp:"جارٍ الدمج...",pdone:"تم! ✓",
-    popup:"📥 <strong style='color:#fff'>اضغط مطولاً</strong> على الصورة للحفظ",popblock:"تم حجب النافذة المنبثقة. يرجى السماح بها."},
+    popup:"📥 <strong style='color:#fff'>اضغط مطولاً</strong> على الصورة للحفظ",popblock:"تم حجب النافذة المنبثقة. يرجى السماح بها.",ikeys:"الإعدادات الرئيسية",itdesc:"كلما قلّت زاد الاكتشاف. منخفضة جداً: ضوضاء؛ مرتفعة جداً: أجزاء مفقودة. الموصى به: 15–25"},
 
   pt:{slogan:"Grave primeiro um vídeo para capturar o movimento,\ndepois envie para o app e analise.\nObtenha fotos estroboscópicas incríveis!",sloganEm:"Obtenha fotos estroboscópicas incríveis!",
     app:"Captura Estroboscópica",badge:"📹 Leia antes de gravar",h2:"Como obter boas fotos estroboscópicas?",
     sub:"Leia as dicas antes de enviar o vídeo.\nGravar corretamente resulta em fotos de trajetória nítidas.",
     start:"✅ Entendido — Iniciar App",tipBtn:"📋 Dicas",
-    tips:[{t:"📌 Mantenha a câmera fixa!",d:"Se a câmera se mover, o fundo muda e os objetos não são detectados.<br><strong>Fixe a câmera — apenas o objeto deve se mover.</strong><br>Sem pessoas passando. No pêndulo, <em>mantenha a mão parada.</em>"},
+    tips:[{t:"📌 Mantenha a câmera fixa!",d:"Se a câmera se mover, o fundo muda e os objetos não são detectados.<br><strong>Fixe a câmera — apenas o objeto deve se mover.</strong><br>Sem pessoas passando. No pêndulo, <em>mantenha a mão parada.</em>"},{t:"🎨 Use um objeto com cor contrastante",d:"A cor do objeto deve <strong>diferir claramente</strong> do fundo.<br>Ex: fundo branco → bola escura/vermelha/azul / fundo escuro → bola branca<br><em>Quanto maior o contraste, mais nítida a trajetória.</em>"},
       {t:"🪂 Queda livre",d:"Grave em <em>câmera lenta</em> e pressione gravar <strong>antes</strong> de soltar o objeto."},
       {t:"🎳 Movimento uniforme",d:"Role um bastão de cola, peça a um amigo para andar em velocidade constante, etc."},
       {t:"🏓 Movimento pendular",d:"Prenda uma bolinha de ping-pong em um fio e balance-a como pêndulo.<br><strong>Pare a gravação antes que ela volte.</strong>"},
       {t:"🏸 Movimento de projétil",d:"Jogue uma bolinha de ping-pong em ângulo.<br><em>Um arco alto e estreito dá os melhores resultados.</em>"}],
-    up:"① Enviar vídeo",utip:"Os <strong>primeiros 0,5 segundos</strong> devem mostrar apenas o fundo.",ubtn:"Enviar vídeo",
+    up:"① Enviar vídeo",utip:"Certifique-se de que o <strong>primeiro fotograma</strong> mostra apenas o fundo.",ubtn:"Enviar vídeo",
     set:"② Configurações",fc:"Número de frames",bg:"Duração do fundo (s)",st:"Início do movimento",et:"Fim do movimento",th:"Sensibilidade — menor = mais detecção",
     rbtn:"Iniciar composição",res:"③ Resultado",save:"Salvar imagem",savem:"Abrir em nova aba (pressão longa para salvar)",reset:"Refazer",
     sup:"☕ Apoie o desenvolvedor",stitle:"A foto ficou boa?",sdesc:"Criei este app para tornar as aulas de ciências mais divertidas.<br>Uma avaliação ou palavra de incentivo ajuda muito! 🙏",play:"Avaliar no Google Play",
@@ -423,18 +409,18 @@ const T = {
     sready:"Pronto",sproc:"Processando",sdone:"Concluído",
     ph:"Envie um vídeo em câmera lenta e pressione Iniciar",phs:"A subtração de fundo extrai apenas o objeto em movimento",
     pbg:"Extraindo fundo...",pcomp:"Compondo...",pdone:"Concluído! ✓",
-    popup:"📥 <strong style='color:#fff'>Pressione longamente</strong> a imagem para salvar",popblock:"Pop-up bloqueado. Por favor, permita pop-ups."},
+    popup:"📥 <strong style='color:#fff'>Pressione longamente</strong> a imagem para salvar",popblock:"Pop-up bloqueado. Por favor, permita pop-ups.",ikeys:"Configurações chave",itdesc:"Menor = mais detectado. Muito baixo: ruído; muito alto: partes perdidas. Recomendado: 15–25"},
 
   hi:{slogan:"पहले स्ट्रोबो गति के लिए एक वीडियो रिकॉर्ड करें,\nफिर ऐप में वीडियो अपलोड करके विश्लेषण करें।\nबेहतरीन स्ट्रोबो ट्रैजेक्टरी फोटो पाएं!",sloganEm:"बेहतरीन स्ट्रोबो ट्रैजेक्टरी फोटो पाएं!",
     app:"स्ट्रोबो गति कैप्चर",badge:"📹 शूट करने से पहले पढ़ें",h2:"अच्छी स्ट्रोबोस्कोपिक फ़ोटो कैसे लें?",
     sub:"वीडियो अपलोड करने से पहले नीचे दिए गए सुझाव पढ़ें।\nसही शूटिंग से साफ़ ट्रैजेक्टरी फ़ोटो बनती है।",
     start:"✅ समझ गया — ऐप शुरू करें",tipBtn:"📋 सुझाव",
-    tips:[{t:"📌 कैमरा स्थिर रखें!",d:"कैमरा हिलने पर पृष्ठभूमि बदल जाती है और वस्तु नहीं पहचानी जाती।<br><strong>कैमरा स्थिर रखें — केवल वस्तु को हिलना चाहिए।</strong><br>कोई व्यक्ति सामने न गुज़रे। पेंडुलम में <em>छोड़ने के बाद हाथ स्थिर रखें।</em>"},
+    tips:[{t:"📌 कैमरा स्थिर रखें!",d:"कैमरा हिलने पर पृष्ठभूमि बदल जाती है और वस्तु नहीं पहचानी जाती।<br><strong>कैमरा स्थिर रखें — केवल वस्तु को हिलना चाहिए।</strong><br>कोई व्यक्ति सामने न गुज़रे। पेंडुलम में <em>छोड़ने के बाद हाथ स्थिर रखें।</em>"},{t:"🎨 पृष्ठभूमि से विपरीत रंग की वस्तु उपयोग करें",d:"वस्तु का रंग पृष्ठभूमि से <strong>स्पष्ट रूप से अलग</strong> होना चाहिए।<br>उदा: सफ़ेद पृष्ठभूमि → काली/लाल/नीली गेंद / अंधेरी पृष्ठभूमि → सफ़ेद गेंद<br><em>जितना अधिक विपरीत, उतना स्पष्ट मार्ग।</em>"},
       {t:"🪂 मुक्त पतन",d:"<em>स्लो-मोशन</em> में रिकॉर्ड करें और वस्तु छोड़ने से <strong>पहले</strong> रिकॉर्ड बटन दबाएं।"},
       {t:"🎳 समान गति",d:"ग्लू स्टिक रोलें, किसी मित्र को स्थिर गति से चलने दें, आदि।"},
       {t:"🏓 पेंडुलम गति",d:"धागे से पिंग-पोंग बॉल बांधें और झुलाएं।<br><strong>वापस आने से पहले रिकॉर्डिंग बंद करें।</strong>"},
       {t:"🏸 प्रक्षेप्य गति",d:"पिंग-पोंग बॉल को कोण पर फेंकें।<br><em>ऊंचा और संकरा चाप सबसे अच्छा परिणाम देता है।</em>"}],
-    up:"① वीडियो अपलोड करें",utip:"वीडियो के <strong>पहले 0.5 सेकंड</strong> में केवल पृष्ठभूमि दिखनी चाहिए।",ubtn:"वीडियो अपलोड करें",
+    up:"① वीडियो अपलोड करें",utip:"सुनिश्चित करें कि <strong>पहला फ्रेम</strong> केवल पृष्ठभूमि दिखाए, कोई वस्तु नहीं।",ubtn:"वीडियो अपलोड करें",
     set:"② सेटिंग्स",fc:"फ़्रेम की संख्या",bg:"पृष्ठभूमि अवधि (सेकंड)",st:"गति प्रारंभ समय",et:"गति समाप्ति समय",th:"संवेदनशीलता — कम = अधिक पहचान",
     rbtn:"कम्पोज़िशन शुरू करें",res:"③ परिणाम",save:"छवि सहेजें",savem:"नए टैब में खोलें (सहेजने के लिए देर तक दबाएं)",reset:"दोबारा करें",
     sup:"☕ डेवलपर का समर्थन करें",stitle:"क्या फ़ोटो अच्छी आई?",sdesc:"मैंने यह ऐप विज्ञान कक्षा को अधिक मज़ेदार बनाने के लिए बनाया।<br>रेटिंग या प्रोत्साहन के शब्द बहुत मदद करते हैं! 🙏",play:"Google Play पर रेट करें",
@@ -442,18 +428,18 @@ const T = {
     sready:"तैयार",sproc:"प्रक्रिया हो रही है",sdone:"पूर्ण",
     ph:"स्लो-मोशन वीडियो अपलोड करें और शुरू करें दबाएं",phs:"पृष्ठभूमि घटाव केवल चलती वस्तु निकालता है",
     pbg:"पृष्ठभूमि निकाली जा रही है...",pcomp:"कम्पोज़ हो रहा है...",pdone:"पूर्ण! ✓",
-    popup:"📥 <strong style='color:#fff'>देर तक दबाएं</strong> छवि को सहेजने के लिए",popblock:"पॉप-अप ब्लॉक हो गया। कृपया पॉप-अप की अनुमति दें।"},
+    popup:"📥 <strong style='color:#fff'>देर तक दबाएं</strong> छवि को सहेजने के लिए",popblock:"पॉप-अप ब्लॉक हो गया। कृपया पॉप-अप की अनुमति दें।",ikeys:"मुख्य सेटिंग्स",itdesc:"कम = अधिक पहचान। बहुत कम: शोर; बहुत अधिक: भाग छूट जाते हैं। अनुशंसित: 15–25"},
 
   id:{slogan:"Rekam video terlebih dahulu untuk menangkap gerak stroboskopik,\nlalu upload ke app dan analisis.\nDapatkan foto trajektori stroboskopik yang menakjubkan!",sloganEm:"Dapatkan foto trajektori stroboskopik yang menakjubkan!",
     app:"Tangkap Gerak Stroboskopik",badge:"📹 Baca Sebelum Merekam",h2:"Cara mendapatkan foto stroboskopik yang baik?",
     sub:"Baca tips di bawah sebelum mengunggah video.\nPelankan pengambilan gambar yang benar menghasilkan foto trajektori yang bersih.",
     start:"✅ Mengerti — Mulai App",tipBtn:"📋 Tips",
-    tips:[{t:"📌 Kamera harus diam!",d:"Jika kamera bergerak, latar belakang berubah dan objek tidak terdeteksi.<br><strong>Kamera harus diam — hanya objek yang boleh bergerak.</strong><br>Tidak ada orang yang lewat. Saat melepas pendulum, <em>tahan tangan agar diam.</em>"},
+    tips:[{t:"📌 Kamera harus diam!",d:"Jika kamera bergerak, latar belakang berubah dan objek tidak terdeteksi.<br><strong>Kamera harus diam — hanya objek yang boleh bergerak.</strong><br>Tidak ada orang yang lewat. Saat melepas pendulum, <em>tahan tangan agar diam.</em>"},{t:"🎨 Gunakan objek dengan warna kontras",d:"Warna objek harus <strong>jelas berbeda</strong> dari latar belakang.<br>Misal: latar putih → bola gelap/merah/biru / latar gelap → bola putih<br><em>Semakin besar kontras, semakin jelas trajektori.</em>"},
       {t:"🪂 Gerak Jatuh Bebas",d:"Rekam dalam <em>mode slow motion</em> dan tekan rekam <strong>sebelum</strong> melepaskan objek."},
       {t:"🎳 Gerak Beraturan",d:"Gulingkan batang lem, minta teman berjalan dengan kecepatan konstan, dsb."},
       {t:"🏓 Gerak Pendulum",d:"Tempelkan bola ping-pong ke tali dan ayunkan.<br><strong>Hentikan rekaman sebelum ayunan kembali.</strong>"},
       {t:"🏸 Gerak Parabola",d:"Lempar bola ping-pong dengan sudut tertentu.<br><em>Lengkungan tinggi dan sempit memberikan hasil terbaik.</em>"}],
-    up:"① Unggah Video",utip:"<strong>0,5 detik pertama</strong> hanya menampilkan latar belakang tanpa objek.",ubtn:"Unggah Video",
+    up:"① Unggah Video",utip:"Pastikan <strong>frame pertama</strong> hanya menampilkan latar belakang tanpa objek.",ubtn:"Unggah Video",
     set:"② Pengaturan",fc:"Jumlah frame",bg:"Durasi latar (detik)",st:"Waktu mulai gerak",et:"Waktu selesai gerak",th:"Sensitivitas — lebih rendah = lebih banyak terdeteksi",
     rbtn:"Mulai Komposisi",res:"③ Hasil",save:"Simpan Gambar",savem:"Buka di tab baru (tekan lama untuk menyimpan)",reset:"Ulangi",
     sup:"☕ Dukung Pengembang",stitle:"Apakah fotonya bagus?",sdesc:"Saya membuat app ini untuk membuat pelajaran sains lebih menyenangkan.<br>Rating atau kata semangat sangat berarti! 🙏",play:"Beri Rating di Google Play",
@@ -461,18 +447,18 @@ const T = {
     sready:"Siap",sproc:"Memproses",sdone:"Selesai",
     ph:"Unggah video slow motion dan tekan Mulai",phs:"Pengurangan latar belakang mengekstrak hanya objek bergerak",
     pbg:"Mengekstrak latar...",pcomp:"Mengomposisi...",pdone:"Selesai! ✓",
-    popup:"📥 <strong style='color:#fff'>Tekan lama</strong> gambar untuk menyimpan",popblock:"Popup diblokir. Harap izinkan popup."},
+    popup:"📥 <strong style='color:#fff'>Tekan lama</strong> gambar untuk menyimpan",popblock:"Popup diblokir. Harap izinkan popup.",ikeys:"Pengaturan Utama",itdesc:"Lebih rendah = lebih banyak terdeteksi. Terlalu rendah: noise; terlalu tinggi: bagian objek hilang. Disarankan: 15–25"},
 
   sv:{slogan:"Spela in en video först för att fånga rörelsen,\nladda sedan upp den i appen och analysera.\nFå fantastiska stroboskopiska bilder!",sloganEm:"Få fantastiska stroboskopiska bilder!",
     app:"Stroboskopisk Rörelsespårning",badge:"📹 Läs innan du filmar",h2:"Hur tar du bra stroboskopiska foton?",
     sub:"Läs tipsen nedan innan du laddar upp videon.\nKorrekt filmning ger tydliga trajektoriebilder.",
     start:"✅ Förstått — Starta appen",tipBtn:"📋 Filmtips",
-    tips:[{t:"📌 Håll kameran stilla!",d:"Om kameran rör sig ändras bakgrunden och objektet kan inte detekteras.<br><strong>Fixera kameran — bara objektet ska röra sig.</strong><br>Inga förbipasserande. Vid pendeln, <em>håll handen stilla när du släpper.</em>"},
+    tips:[{t:"📌 Håll kameran stilla!",d:"Om kameran rör sig ändras bakgrunden och objektet kan inte detekteras.<br><strong>Fixera kameran — bara objektet ska röra sig.</strong><br>Inga förbipasserande. Vid pendeln, <em>håll handen stilla när du släpper.</em>"},{t:"🎨 Använd ett objekt med kontrasterande färg",d:"Objektets färg måste <strong>tydligt skilja sig</strong> från bakgrunden.<br>T.ex. Vit bakgrund → mörk/röd/blå boll / Mörk bakgrund → vit boll<br><em>Ju större kontrast, desto skarpare trajektorie.</em>"},
       {t:"🪂 Fritt fall",d:"Filma i <em>slow motion</em> och tryck på spela in <strong>innan</strong> du släpper objektet."},
       {t:"🎳 Jämn rörelse",d:"Rulla en limstift, låt en vän gå i jämn takt osv."},
       {t:"🏓 Pendelrörelse",d:"Tejpa en pingisboll på ett snöre och svinga den som en pendel.<br><strong>Stoppa inspelningen innan den svänger tillbaka.</strong>"},
       {t:"🏸 Kaströrelse",d:"Kasta en pingisboll i en vinkel.<br><em>En hög, smal kurva ger bäst resultat.</em>"}],
-    up:"① Ladda upp video",utip:"Se till att de <strong>första 0,5 sekunderna</strong> bara visar bakgrunden.",ubtn:"Ladda upp video",
+    up:"① Ladda upp video",utip:"Se till att <strong>allra första bildrutan</strong> bara visar bakgrunden utan objekt.",ubtn:"Ladda upp video",
     set:"② Inställningar",fc:"Antal bildrutor",bg:"Bakgrundsduration (sek)",st:"Rörelsens start",et:"Rörelsens slut",th:"Känslighet — lägre = mer detekteras",
     rbtn:"Starta sammanslagning",res:"③ Resultat",save:"Spara bild",savem:"Öppna i ny flik (håll intryckt för att spara)",reset:"Gör om",
     sup:"☕ Stöd utvecklaren",stitle:"Blev spårningsbilden bra?",sdesc:"Jag skapade den här appen för att göra NO-lektionerna roligare.<br>Ett betyg eller uppmuntrande ord betyder mycket! 🙏",play:"Betygsätt på Google Play",
@@ -480,7 +466,7 @@ const T = {
     sready:"Redo",sproc:"Bearbetar",sdone:"Klar",
     ph:"Ladda upp en slow motion-video och tryck på Starta",phs:"Bakgrundssubtraktion extraherar bara det rörliga objektet",
     pbg:"Extraherar bakgrund...",pcomp:"Sätter ihop...",pdone:"Klar! ✓",
-    popup:"📥 <strong style='color:#fff'>Håll nere</strong> bilden för att spara",popblock:"Popup blockerades. Tillåt popups i din webbläsare."}
+    popup:"📥 <strong style='color:#fff'>Håll nere</strong> bilden för att spara",popblock:"Popup blockerades. Tillåt popups i din webbläsare.",ikeys:"Nyckelinställningar",itdesc:"Lägre = mer detekteras. För lågt: brus; för högt: delar av objektet försvinner. Rekommenderat: 15–25"}
 };
 
 const RTL=['ar'];
@@ -515,7 +501,6 @@ function setLang(l){
   document.getElementById('btnUpload').textContent=t.ubtn;
   document.getElementById('secSettings').textContent=t.set;
   document.getElementById('lblFC').textContent=t.fc;
-  document.getElementById('lblBG').textContent=t.bg;
   document.getElementById('lblST').textContent=t.st;
   document.getElementById('lblET').textContent=t.et;
   document.getElementById('lblTH').textContent=t.th;
@@ -523,16 +508,14 @@ function setLang(l){
   document.getElementById('secResult').textContent=t.res;
   document.getElementById('btnSave').textContent=isMobile?t.savem:t.save;
   document.getElementById('btnReset').textContent=t.reset;
-  document.getElementById('secSupport').textContent=t.sup;
-  document.getElementById('supportTitle').textContent=t.stitle;
-  document.getElementById('supportDesc').innerHTML=t.sdesc;
-  document.getElementById('btnPlay').textContent=t.play;
   document.getElementById('secData').textContent=t.data;
   document.getElementById('lblDur').textContent=t.dur;
   document.getElementById('lblFr').textContent=t.fr;
   document.getElementById('lblRes').textContent=t.res2;
   document.getElementById('lblStat').textContent=t.stat;
   document.getElementById('stStatus').textContent=t.sready;
+  if(document.getElementById('lblKeySettings')) document.getElementById('lblKeySettings').textContent=t.ikeys||'Key Settings';
+  if(document.getElementById('threshDesc')) document.getElementById('threshDesc').textContent=t.itdesc||'';
   const backLabels={'ko':'🌐 언어 선택','en':'🌐 Language','es':'🌐 Idioma','fr':'🌐 Langue','de':'🌐 Sprache','ja':'🌐 言語選択','zh':'🌐 语言选择','ru':'🌐 Язык','ar':'🌐 اللغة','pt':'🌐 Idioma','hi':'🌐 भाषा','id':'🌐 Bahasa','sv':'🌐 Språk'};
   document.getElementById('backBtn').textContent=backLabels[l]||'🌐 Language';
   document.getElementById('phText').textContent=t.ph;
@@ -606,7 +589,6 @@ renderBtn.addEventListener('click',async()=>{
   if(!duration)return;
   const t=T[lang];
   const fc=Math.max(2,Math.min(100,+document.getElementById('frameCount').value));
-  const bg=+document.getElementById('bgSec').value;
   const s=+document.getElementById('startSlider').value/100*duration;
   const e=+document.getElementById('endSlider').value/100*duration;
   const th=+document.getElementById('threshSlider').value;
@@ -618,9 +600,10 @@ renderBtn.addEventListener('click',async()=>{
   const tmpC=document.createElement('canvas');tmpC.width=vw;tmpC.height=vh;const tc=tmpC.getContext('2d');
   const mC=document.createElement('canvas');mC.width=vw;mC.height=vh;const mc=mC.getContext('2d');
   progTxt.textContent=t.pbg;
-  const n=5;const acc=new Float32Array(vw*vh*4);
-  for(let i=0;i<n;i++){await seekTo(bg*(i+1)/(n+1));bgc.drawImage(vidEl,0,0);const d=bgc.getImageData(0,0,vw,vh).data;for(let j=0;j<d.length;j++)acc[j]+=d[j];}
-  const bgD=new Uint8ClampedArray(vw*vh*4);for(let j=0;j<bgD.length;j++)bgD[j]=acc[j]/n;
+  // 배경: 영상 첫 프레임 (0초) 단 하나만 사용
+  await seekTo(0);
+  bgc.drawImage(vidEl,0,0);
+  const bgD=bgc.getImageData(0,0,vw,vh).data;
   resultCanvas.width=vw;resultCanvas.height=vh;resultCanvas.style.display='block';centerPh.style.display='none';
   rc.globalAlpha=1;rc.globalCompositeOperation='source-over';
   bgc.putImageData(new ImageData(bgD,vw,vh),0,0);rc.drawImage(bgC,0,0);
@@ -640,7 +623,6 @@ renderBtn.addEventListener('click',async()=>{
   setTimeout(()=>{progWrap.style.display='none';},1500);
   renderBtn.disabled=false;saveBtn.disabled=false;resetBtn.disabled=false;
   document.getElementById('stStatus').textContent=t.sdone;
-  document.getElementById('supportSec').style.display='block';
 });
 
 saveBtn.addEventListener('click',()=>{
@@ -659,7 +641,6 @@ resetBtn.addEventListener('click',()=>{
   saveBtn.disabled=true;resetBtn.disabled=true;
   document.getElementById('stFrames').textContent='--';
   document.getElementById('stStatus').textContent=T[lang].sready;
-  document.getElementById('supportSec').style.display='none';
 });
 window.addEventListener('resize',adjustLayout);
 </script>
