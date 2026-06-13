@@ -22,13 +22,10 @@ header{display:flex;align-items:center;gap:10px;padding:12px 20px;background:var
 .sl-head b{color:var(--text);font-family:'Space Grotesk',monospace;}
 input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--accent);cursor:pointer;}
-
-/* 숫자 직접 입력 */
 .num-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .num-row label{font-size:11px;color:var(--muted);flex:1;}
 .num-input{width:70px;padding:5px 8px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:'Space Grotesk',monospace;font-size:13px;font-weight:600;text-align:right;}
 .num-input:focus{outline:none;border-color:var(--accent);}
-
 .btn{width:100%;padding:9px 12px;border-radius:7px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
 .btn+.btn{margin-top:6px;}
 .btn-blue{background:var(--accent);color:#0d1117;}.btn-blue:hover{filter:brightness(1.15);}
@@ -36,7 +33,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);}.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
 .btn-red{background:transparent;color:var(--orange);border:1px solid var(--orange);}
 .btn:disabled{background:var(--border)!important;color:var(--muted)!important;border-color:transparent!important;cursor:not-allowed;filter:none!important;}
-
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:9px;}
 .s-lbl{font-size:10px;color:var(--muted);margin-bottom:2px;}
@@ -45,7 +41,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
 .prog-bar{background:var(--border);border-radius:4px;height:6px;overflow:hidden;}
 .prog-fill{height:100%;background:var(--green);width:0%;transition:width .05s;border-radius:4px;}
 .prog-txt{font-size:11px;color:var(--muted);margin-top:4px;text-align:center;}
-
 .center{flex:1;background:#111;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 #resultCanvas{max-width:100%;max-height:100%;object-fit:contain;display:none;}
 .center-ph{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--muted);text-align:center;padding:20px;}
@@ -65,8 +60,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     <div class="sec">
       <div class="sec-title">① 영상 업로드</div>
       <div class="tip">
-        영상 <strong>첫 부분(0.5초)</strong>에 물체 없이 배경만 보이게 찍으면<br>
-        배경 차분이 훨씬 정확해요.
+        영상 <strong>앞부분 0.5초</strong>는 물체 없이 배경만 나오게 촬영하세요.<br>
+        그래야 배경과 물체를 정확히 구분할 수 있어요.
       </div>
       <input type="file" id="videoInput" accept="video/*">
       <button class="btn btn-blue" onclick="document.getElementById('videoInput').click()">
@@ -78,24 +73,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
     <div class="sec">
       <div class="sec-title">② 합성 설정</div>
 
-      <div class="tip">
-        <strong>합성 프레임 수</strong>: 몇 개의 위치를 찍을지 직접 입력하세요.<br>
-        예) 10 → 운동 구간을 10등분해서 10개 위치 합성
-      </div>
-
-      <!-- 합성 프레임 수 직접 입력 -->
       <div class="num-row">
-        <label>합성 프레임 수</label>
+        <label>합성 프레임 수 (물체 몇 개 찍을지)</label>
         <input type="number" class="num-input" id="frameCount" value="10" min="2" max="100">
       </div>
 
-      <!-- 배경 구간 -->
       <div class="num-row">
-        <label>배경 구간 (영상 시작 몇 초)</label>
-        <input type="number" class="num-input" id="bgSec" value="0.5" min="0.1" max="5" step="0.1">
+        <label>배경 구간 종료 (초) — 이 전까지 배경</label>
+        <input type="number" class="num-input" id="bgSec" value="0.5" min="0.05" max="5" step="0.05">
       </div>
 
-      <!-- 운동 시작/종료 -->
       <div class="sl-row">
         <div class="sl-head"><span>운동 시작 시간</span><b id="startVal">--</b>s</div>
         <input type="range" id="startSlider" min="0" max="100" value="20" step="1" oninput="updateRange()">
@@ -105,10 +92,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <input type="range" id="endSlider" min="0" max="100" value="100" step="1" oninput="updateRange()">
       </div>
 
-      <!-- 차분 임계값 -->
       <div class="sl-row">
-        <div class="sl-head"><span>감도 (배경 차이 임계값)</span><b id="threshVal">25</b></div>
-        <input type="range" id="threshSlider" min="5" max="80" value="25"
+        <div class="sl-head">
+          <span>감도 — 낮을수록 더 많이 감지</span><b id="threshVal">20</b>
+        </div>
+        <input type="range" id="threshSlider" min="3" max="80" value="20"
                oninput="document.getElementById('threshVal').value=this.value">
       </div>
 
@@ -135,7 +123,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
       <div class="sec-title">데이터</div>
       <div class="stat-grid">
         <div class="stat-card"><div class="s-lbl">영상 길이</div><div class="s-val" id="stDur">--</div></div>
-        <div class="stat-card"><div class="s-lbl">실제 합성 수</div><div class="s-val" id="stFrames">--</div></div>
+        <div class="stat-card"><div class="s-lbl">합성 프레임</div><div class="s-val" id="stFrames">--</div></div>
         <div class="stat-card"><div class="s-lbl">해상도</div><div class="s-val" id="stRes">--</div></div>
         <div class="stat-card"><div class="s-lbl">상태</div><div class="s-val" id="stStatus">대기</div></div>
       </div>
@@ -150,7 +138,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;heigh
         <rect x="2" y="7" width="20" height="15" rx="2"/><polyline points="17 2 12 7 7 2"/>
       </svg>
       <p>슬로모션 영상을 업로드하고 합성 시작을 누르세요</p>
-      <small>배경 차분으로 물체만 추출해 합성합니다<br>물체 색상과 무관하게 작동합니다</small>
+      <small>배경 차분으로 물체만 추출 → 완전 불투명하게 합성<br>물체 색상과 무관하게 작동합니다</small>
     </div>
   </div>
 </div>
@@ -217,47 +205,36 @@ renderBtn.addEventListener('click', async () => {
 
   const vw = vidEl.videoWidth, vh = vidEl.videoHeight;
 
-  // 오프스크린 캔버스들
-  const bgCanvas = document.createElement('canvas');
-  bgCanvas.width = vw; bgCanvas.height = vh;
-  const bgc = bgCanvas.getContext('2d');
+  const bgCanvas  = document.createElement('canvas'); bgCanvas.width=vw; bgCanvas.height=vh;
+  const bgc       = bgCanvas.getContext('2d');
+  const tmpCanvas = document.createElement('canvas'); tmpCanvas.width=vw; tmpCanvas.height=vh;
+  const tc        = tmpCanvas.getContext('2d');
+  const maskCanvas= document.createElement('canvas'); maskCanvas.width=vw; maskCanvas.height=vh;
+  const mc        = maskCanvas.getContext('2d');
 
-  const tmpCanvas = document.createElement('canvas');
-  tmpCanvas.width = vw; tmpCanvas.height = vh;
-  const tc = tmpCanvas.getContext('2d');
-
-  const maskCanvas = document.createElement('canvas');
-  maskCanvas.width = vw; maskCanvas.height = vh;
-  const mc = maskCanvas.getContext('2d');
-
-  // ── 1단계: 배경 추출 (bgSec 구간 여러 프레임 평균) ──
+  // ── 1단계: 배경 추출 (bgSec 구간 5프레임 평균) ──
   progTxt.textContent = '배경 추출 중...';
-  const bgFrames = 5;
-  const bgPixels = new Float32Array(vw * vh * 4); // 누적용
-
-  for (let i = 0; i < bgFrames; i++) {
-    const t = Math.min(bgSec * (i + 1) / bgFrames, bgSec);
-    await seekTo(t);
+  const bgSamples = 5;
+  const bgAcc = new Float32Array(vw * vh * 4);
+  for (let i = 0; i < bgSamples; i++) {
+    await seekTo(bgSec * (i + 1) / (bgSamples + 1));
     bgc.drawImage(vidEl, 0, 0);
     const d = bgc.getImageData(0, 0, vw, vh).data;
-    for (let j = 0; j < d.length; j++) bgPixels[j] += d[j];
+    for (let j = 0; j < d.length; j++) bgAcc[j] += d[j];
   }
-  // 평균
   const bgData = new Uint8ClampedArray(vw * vh * 4);
-  for (let j = 0; j < bgData.length; j++) bgData[j] = bgPixels[j] / bgFrames;
-  const bgImageData = new ImageData(bgData, vw, vh);
+  for (let j = 0; j < bgData.length; j++) bgData[j] = bgAcc[j] / bgSamples;
 
   // ── 2단계: 결과 캔버스에 배경 깔기 ──
   resultCanvas.width = vw; resultCanvas.height = vh;
   resultCanvas.style.display = 'block';
   centerPh.style.display = 'none';
-
   rc.globalAlpha = 1;
   rc.globalCompositeOperation = 'source-over';
-  bgc.putImageData(bgImageData, 0, 0);
+  bgc.putImageData(new ImageData(bgData, vw, vh), 0, 0);
   rc.drawImage(bgCanvas, 0, 0);
 
-  // ── 3단계: 운동 구간을 N등분하여 각 프레임에서 물체만 추출해 합성 ──
+  // ── 3단계: 각 프레임에서 배경 차분 → 물체만 완전 불투명으로 합성 ──
   const times = [];
   for (let i = 0; i < frameCount; i++) {
     times.push(startT + (endT - startT) * i / (frameCount - 1));
@@ -266,31 +243,28 @@ renderBtn.addEventListener('click', async () => {
   for (let i = 0; i < times.length; i++) {
     await seekTo(times[i]);
     tc.drawImage(vidEl, 0, 0);
-    const currData = tc.getImageData(0, 0, vw, vh).data;
+    const curr = tc.getImageData(0, 0, vw, vh).data;
 
-    // 배경 차분: 현재 프레임 - 배경 → 차이가 큰 픽셀 = 물체
-    const maskData = new Uint8ClampedArray(vw * vh * 4);
+    // 배경 차분: 물체 픽셀 = 배경과 차이가 thresh 이상인 픽셀
+    // 알파값 = 255 (완전 불투명) → 흐림 없음
+    const maskPx = new Uint8ClampedArray(vw * vh * 4);
     for (let px = 0; px < vw * vh; px++) {
       const j = px * 4;
-      const dr = Math.abs(currData[j]   - bgData[j]);
-      const dg = Math.abs(currData[j+1] - bgData[j+1]);
-      const db = Math.abs(currData[j+2] - bgData[j+2]);
-      const diff = (dr + dg + db) / 3;
+      const dr = Math.abs(curr[j]   - bgData[j]);
+      const dg = Math.abs(curr[j+1] - bgData[j+1]);
+      const db = Math.abs(curr[j+2] - bgData[j+2]);
 
-      if (diff > thresh) {
-        // 물체 픽셀: 원래 색 그대로, 불투명하게
-        maskData[j]   = currData[j];
-        maskData[j+1] = currData[j+1];
-        maskData[j+2] = currData[j+2];
-        maskData[j+3] = Math.min(255, Math.round(diff * 4)); // 차이가 클수록 선명
-      } else {
-        // 배경 픽셀: 투명
-        maskData[j+3] = 0;
+      if ((dr + dg + db) / 3 > thresh) {
+        // 물체 픽셀: 원래 색, 완전 불투명
+        maskPx[j]   = curr[j];
+        maskPx[j+1] = curr[j+1];
+        maskPx[j+2] = curr[j+2];
+        maskPx[j+3] = 255; // ← 핵심: 무조건 불투명
       }
+      // 배경 픽셀: alpha=0 (기본값) → 투명, 건드리지 않음
     }
 
-    // 마스크를 결과에 합성
-    mc.putImageData(new ImageData(maskData, vw, vh), 0, 0);
+    mc.putImageData(new ImageData(maskPx, vw, vh), 0, 0);
     rc.globalAlpha = 1;
     rc.globalCompositeOperation = 'source-over';
     rc.drawImage(maskCanvas, 0, 0);
@@ -304,7 +278,6 @@ renderBtn.addEventListener('click', async () => {
   progFill.style.width = '100%';
   progTxt.textContent  = '완료! ✓';
   setTimeout(() => { progWrap.style.display = 'none'; }, 1500);
-
   renderBtn.disabled = false;
   saveBtn.disabled   = false;
   resetBtn.disabled  = false;
